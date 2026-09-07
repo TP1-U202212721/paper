@@ -1,0 +1,119 @@
+%% [AI DRAFT] Borrador generado para discusión (Modo C, etapa 3).
+%% Citas verificadas contra el PDF. Sin marcadores [VERIFY] pendientes.
+
+\section{TRABAJO RELACIONADO}
+
+La estimación de riesgo en comercio electrónico constituye hoy un campo consolidado. Esta
+sección lo recorre en cinco apartados: el papel que la inteligencia artificial ha adquirido en
+la estimación de riesgo, la detección de vendedores fraudulentos desde la plataforma, la
+identificación de reseñas manipuladas, la detección de sitios de suplantación y las
+contramedidas desplegadas por el comercio; un sexto recoge la brecha que este trabajo aborda.
+Su revisión muestra un patrón común: los avances se producen en el lado de quien opera la
+plataforma o el servicio, y rara vez alcanzan al comprador en el momento en que decide.
+
+\subsection{Inteligencia artificial aplicada a la estimación de riesgo}
+
+El aprendizaje profundo se ha consolidado como la tecnología sobre la que las plataformas de
+comercio electrónico resuelven predicción, personalización y decisión, incluida la gestión de
+la confianza, la integridad de las reseñas y la detección de fraude \cite{ref31}. El
+desplazamiento tuvo una causa concreta: los mecanismos de seguridad basados en reglas no
+escalan ante el volumen, la heterogeneidad y el carácter adaptativo de las amenazas actuales,
+por lo que el aprendizaje profundo pasó a operar como tecnología habilitante para la detección
+de amenazas, el modelado de riesgo conductual y la supervisión a gran escala \cite{ref31}.
+El mismo trabajo señala que el contenido generado por usuarios (reseñas, calificaciones e
+imágenes) resulta decisivo en la decisión de compra y, a la vez, altamente vulnerable a la
+manipulación y al fraude coordinado, lo que sitúa la autenticidad de las reseñas en el centro
+del problema.
+
+Un ejemplo cuantificado ilustra el nivel alcanzado y, a la vez, su condición de posibilidad.
+Un modelo híbrido de red convolucional con máquina de aprendizaje extremo optimizada alcanza
+una exactitud de 96.23\,\% y un AUC de 0.9118 al clasificar el riesgo crediticio de empresas
+de comercio transfronterizo \cite{ref32}. El objeto estimado no es el riesgo de estafa que
+percibe un comprador individual, y el insumo que ese desempeño requiere (información
+financiera de la contraparte, condiciones de operación y evaluaciones de la plataforma) no es
+accesible desde el navegador de quien está por comprar \cite{ref32}.
+
+Los algoritmos que sostienen esta línea son identificables. En la detección de reseñas
+manipuladas predominan los modelos de lenguaje basados en transformadores: variantes de BERT
+ajustadas al dominio del comercio electrónico \cite{ref16}, arquitecturas adversariales sobre
+la misma familia \cite{ref17} y redes neuronales profundas aplicadas a reseñas de plataformas
+concretas \cite{ref18}, en ocasiones combinadas con memorias de largo y corto plazo
+bidireccionales y con herramientas de explicabilidad para justificar el veredicto
+\cite{ref16}. En la estimación de riesgo del vendedor y en la detección de sitios de
+suplantación predominan, en cambio, los métodos de ensamble y los clasificadores de margen:
+bosques aleatorios, máquinas de soporte vectorial, árboles de decisión y gradiente potenciado
+aparecen de forma recurrente \cite{ref10, ref13, ref14}, y el marco de detección más reciente
+combina cuatro de ellos con selección de características mediante SHAP y eliminación recursiva
+\cite{ref25}. Esta división no es casual: el texto libre de las reseñas exige representaciones
+contextuales, mientras que los atributos estructurales de una ficha, heterogéneos y de baja
+dimensionalidad, se ajustan mejor a los métodos por árboles.
+
+Estos enfoques se sitúan invariablemente en la plataforma, en la institución financiera o en
+el operador del servicio, que son quienes disponen de los registros y ejecutan los modelos. Y
+aun ahí admiten fallos: los detectores más avanzados pueden ser eludidos mediante
+perturbaciones adversariales u ofuscación lingüística \cite{ref31}, de modo que la defensa
+centralizada, por sólida que sea, deja pasar casos que alcanzan al comprador sin que este
+disponga de instrumento alguno.
+
+\subsection{Detección de fraude desde la plataforma}
+
+La detección de fraude en comercio electrónico ha alcanzado madurez metodológica: una
+revisión sistemática reciente \cite{ref10} recoge la diversidad de técnicas aplicadas al
+problema, y trabajos posteriores han refinado la selección de características \cite{ref13,
+ref14} y la identificación de vendedores fraudulentos dentro de una plataforma \cite{ref19}.
+El exponente más reciente ilustra a la vez el alcance y el límite de la línea: combinando
+razonamiento basado en casos con un sistema multiagente se alcanza un área bajo la curva (AUC)
+de 0.979 sobre unos 1.27 millones de instancias, resistiendo la deriva del comportamiento
+fraudulento mejor que los clasificadores convencionales \cite{ref28}. Ese desempeño se sostiene
+sobre datos que solo el operador posee (registros transaccionales, huellas de dispositivo y un
+grafo de interacción de más de un millón de aristas), a los que el comprador que evalúa una
+ficha no tiene acceso.
+
+\subsection{Reseñas manipuladas}
+
+La segunda línea aborda la autenticidad de las reseñas y, a los detectores ya mencionados,
+suma enfoques de fusión con características de aspecto \cite{ref15}. A esa discusión se agrega
+un resultado de naturaleza distinta \cite{ref29}. Mediante un modelo
+de competencia entre un vendedor auténtico y un falsificador que comparten ficha de producto,
+se muestra que en equilibrio el vendedor auténtico no adquiere reseñas falsas mientras que el
+falsificador puede hacerlo para inducir a error al comprador. La
+manipulación de la reputación no es, por tanto, una anomalía del mercado sino un
+comportamiento previsible de quien tiene algo que ocultar. El mismo trabajo establece que la
+cantidad de reseñas falsas en equilibrio decrece con la fracción de consumidores capaces de
+interpretar correctamente los indicadores de la ficha, lo que sitúa la información del
+comprador (y no solo la capacidad de detección de la plataforma) como palanca de mitigación.
+
+\subsection{Suplantación de sitios y análisis de dominio}
+
+La tercera línea proviene de la seguridad informática. En \cite{ref7} se detectan localizadores uniformes de recursos (URL) de
+\textit{phishing} en dominios aparcados a partir de características derivadas del registro,
+aplicándolo a una institución financiera, y en \cite{ref25} se propone un marco de detección
+sobre 1\,353 URL con selección de características por explicaciones aditivas de Shapley (SHAP)
+y eliminación recursiva, con una
+exactitud de 0.984.
+
+Lo más relevante de este último para el presente trabajo no es el desempeño del clasificador
+sino el diagnóstico que lo motiva: el certificado SSL válido dejó de discriminar, porque los
+atacantes lo obtienen mediante servicios automatizados, y las listas de bloqueo del navegador
+no alcanzan a cubrir dominios desplegados y retirados en horas \cite{ref25}.
+
+\subsection{Contramedidas del lado del comercio}
+
+Una revisión sistemática de métodos de seguridad en entornos de comercio electrónico
+\cite{ref30} inventaría siete familias de controles (cifrado SSL/TLS, cortafuegos, sistemas de
+detección de intrusiones, actualizaciones, capacitación del personal, inteligencia artificial
+y colaboración con terceros) y concluye que ninguna basta por sí sola, por lo que la defensa
+debe articularse en capas. Las siete, no obstante, se implementan y se financian dentro de la
+empresa de comercio. Ninguna protege al comprador que interactúa con una plataforma o un
+vendedor que no las adoptó.
+
+\subsection{Brecha de investigación}
+
+El comprador ocupa así una posición singular: existen métodos eficaces contra los vendedores
+fraudulentos, contra las reseñas manipuladas y contra la suplantación de sitios, pero todos
+requieren datos, infraestructura o autoridad de los que él carece, y las recomendaciones
+dirigidas a él son educativas y de eficacia limitada \cite{ref27, ref3}. Ninguno de los
+trabajos revisados combina características de dominio, de vendedor y de reseñas en un
+instrumento que se ejecute del lado del comprador y emita su advertencia antes del pago. Esa
+es la brecha que este trabajo aborda, con la salvedad de que lo presentado es una propuesta de
+arquitectura y no un sistema evaluado.

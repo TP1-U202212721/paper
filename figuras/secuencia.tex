@@ -1,0 +1,71 @@
+% ===================================================================
+%  Fig. 2 — Diagrama de secuencia: de la apertura de la ficha al veredicto
+%  Entregable: short-paper-es
+%  Preambulo requerido: tikz + arrows.meta, positioning, fit, backgrounds
+%  Va dentro de un entorno figure* (ancho de las dos columnas).
+% ===================================================================
+\begin{tikzpicture}[
+  font=\footnotesize, x=1cm, y=1cm,
+  actor/.style   = {draw=black!75, fill=black!5, rounded corners=1.5pt,
+                    align=center, minimum height=7.5mm, inner xsep=4pt,
+                    text width=22mm, line width=0.4pt},
+  vida/.style    = {densely dashed, black!45, line width=0.35pt},
+  msg/.style     = {-{Latex[length=1.7mm]}, line width=0.45pt, black!80},
+  ret/.style     = {-{Latex[length=1.7mm]}, line width=0.45pt, black!55,
+                    densely dashed},
+  et/.style      = {font=\scriptsize, inner sep=1.6pt, fill=white, align=center},
+  nota/.style    = {font=\scriptsize\itshape, align=left, black!65,
+                    draw=black!35, fill=black!3, rounded corners=1.5pt,
+                    inner sep=4pt, text width=30mm},
+]
+\def\W{0.15}                      % media anchura de la barra de activación
+\newcommand{\activa}[3]{%         % #1 = x, #2 = y inicio, #3 = y fin
+  \fill[black!10] (#1-\W,#2) rectangle (#1+\W,#3);
+  \draw[black!70, line width=0.35pt] (#1-\W,#2) rectangle (#1+\W,#3);}
+
+% ---------- actores y líneas de vida ----------
+\foreach \x/\n/\t in {
+  0/usr/{Comprador},
+  3.6/ext/{\textbf{Extensión}\\\scriptsize artefacto principal},
+  7.6/dom/{Analizador\\de dominio},
+  11.0/mod/{Modelos de\\inferencia},
+  14.3/agg/{Agregador},
+  17.3/bd/{BD de\\registros}} {
+  \node[actor] (\n) at (\x,0) {\t};
+  \draw[vida] (\x,-0.46) -- (\x,-10.5);
+}
+
+% ---------- activaciones ----------
+\activa{3.6}{-1.2}{-10.0}
+\activa{7.6}{-3.4}{-4.3}
+\activa{11.0}{-5.1}{-6.0}
+\activa{14.3}{-6.8}{-8.8}
+\activa{17.3}{-8.4}{-8.8}
+
+% ---------- mensajes ----------
+\draw[msg] (0,-1.2) -- node[et,above]{abre la ficha de producto} (3.45,-1.2);
+
+\draw[msg] (3.75,-2.0) -- ++(1.3,0) -- ++(0,-0.55)
+   node[et,right,xshift=1.2mm,yshift=2mm]{lee el DOM ya renderizado} -- (3.75,-2.55);
+
+\draw[msg] (3.75,-3.4) -- node[et,above]{nombre de dominio} (7.45,-3.4);
+\draw[ret] (7.45,-4.3) -- node[et,above]{veracidad estimada} (3.75,-4.3);
+
+\draw[msg] (3.75,-5.1) -- node[et,above]{características extraídas} (10.85,-5.1);
+\draw[ret] (10.85,-6.0) -- node[et,above]{riesgo del vendedor · reseñas falsas} (3.75,-6.0);
+
+\draw[msg] (3.75,-6.8) -- node[et,above]{resultados parciales} (14.15,-6.8);
+
+\draw[msg] (14.45,-7.5) -- ++(1.15,0) -- ++(0,-0.55)
+   node[et,right,xshift=1.2mm,yshift=2mm]{aplica la abstención} -- (14.45,-8.05);
+
+\draw[msg] (14.45,-8.4) -- node[et,above]{registro de la consulta} (17.15,-8.4);
+
+\draw[ret] (14.15,-9.3) -- node[et,above]{veredicto + nivel de confianza} (3.75,-9.3);
+\draw[ret] (3.45,-10.0) -- node[et,above]{advertencia explicada, antes del pago} (0,-10.0);
+
+% ---------- nota ----------
+\node[nota, anchor=north west] at (18.2,-1.0)
+  {La extensión no consulta a la plataforma del vendedor: opera sobre el documento que el navegador ya recibió.};
+
+\end{tikzpicture}

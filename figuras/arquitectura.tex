@@ -1,0 +1,89 @@
+% ===================================================================
+%  Fig. 1 — Arquitectura logica propuesta
+%  Entregable: short-paper-es
+%  Figura vectorial en TikZ: se edita como texto y compila con el paper.
+%  Preambulo requerido:
+%    \usepackage{tikz}
+%    \usetikzlibrary{arrows.meta,positioning,fit,backgrounds}
+%  Va dentro de un entorno figure* (ancho de las dos columnas).
+% ===================================================================
+\begin{tikzpicture}[
+  font=\footnotesize,
+  banda/.style   = {draw=black!25, rounded corners=2pt},
+  caja/.style    = {draw=black!75, fill=white, rounded corners=1.5pt,
+                    align=center, minimum height=12mm, inner xsep=2pt,
+                    text width=29mm, line width=0.4pt},
+  cliente/.style = {caja, fill=black!3, text width=33mm, minimum height=11mm},
+  compl/.style   = {cliente, densely dashed, fill=white},
+  agg/.style     = {caja, fill=black!8, text width=60mm, minimum height=11mm},
+  etiq/.style    = {font=\scriptsize\bfseries, black!50, anchor=west},
+  fl/.style      = {-{Latex[length=1.7mm]}, line width=0.45pt, black!75},
+  bus/.style     = {line width=0.45pt, black!75},
+  nota/.style    = {font=\scriptsize\itshape, black!60, align=center,
+                    inner sep=1.2pt, fill=white},
+]
+
+% =============== BANDA 1 · CLIENTE ===============
+\begin{scope}[on background layer]
+  \node[banda, fit={(0,5.15) (15.9,6.85)}] {};
+\end{scope}
+\node[etiq] at (0.15,6.62) {CLIENTE};
+
+\node[cliente] (mkt)  at (2.2,5.95)
+  {Página del\\marketplace\\[-2pt]\scriptsize abierta por el usuario};
+\node[cliente] (extn) at (7.5,5.95)
+  {\textbf{Extensión de navegador}\\\scriptsize lee el DOM ya renderizado};
+\node[compl] (app)  at (11.4,5.95)
+  {Cliente multiplataforma\\\scriptsize complementario · web · móvil};
+
+\draw[fl] (mkt) -- node[nota, above, yshift=-0.6mm] {sin scraping} (extn);
+
+% =============== BUS DE CARACTERISTICAS ===============
+\draw[bus] (extn.south) -- (7.5,4.85);
+\draw[bus] (app.south)  -- (11.4,4.85);
+\draw[bus] (2.6,4.85) -- (12.9,4.85);
+\node[nota] at (4.35,4.66) {características extraídas};
+
+% =============== BANDA 2 · BACKEND ===============
+\begin{scope}[on background layer]
+  \node[banda, fit={(0,0.85) (15.9,4.55)}] {};
+\end{scope}
+\node[etiq] at (0.15,4.34) {BACKEND};
+
+\node[caja] (dom)  at (2.6,3.45)  {Veracidad de dominio\\[-2pt]
+                                   \scriptsize registro · CNAME\\[-3pt]
+                                   \scriptsize namespace · patrones};
+\node[caja] (rep)  at (6.03,3.45) {Reputación\\del vendedor};
+\node[caja] (rf)   at (9.47,3.45) {Clasificador\\de riesgo};
+\node[caja] (bert) at (12.9,3.45) {Detección de\\reseñas falsas};
+
+\foreach \x in {2.6,6.03,9.47,12.9} { \draw[fl] (\x,4.85) -- (\x,4.06); }
+
+\node[agg] (ag) at (7.75,1.65)
+  {\textbf{Agregador de características}\\[-2pt]
+   \scriptsize degradación honesta:\\[-3pt]
+   \scriptsize ausencia de evidencia $\neq$ seguridad};
+
+\foreach \n in {dom,rep,rf,bert} { \draw[fl] (\n) -- (ag); }
+
+% =============== BANDA 3 · PERSISTENCIA ===============
+\begin{scope}[on background layer]
+  \node[banda, fit={(0,-1.15) (15.9,0.55)}] {};
+\end{scope}
+\node[etiq] at (0.15,0.32) {PERSISTENCIA};
+
+\node[caja, text width=42mm] (bd)  at (4.0,-0.5)
+  {BD de registros\\[-2pt]\scriptsize consultas · características · veredictos};
+\node[caja, text width=32mm] (mod) at (12.9,-0.5)
+  {Almacén de modelos};
+
+\draw[fl] (ag.south) |- node[nota, above, pos=0.72] {registro} (bd.east);
+\draw[fl] (mod.north) -- node[nota, right, xshift=0.4mm] {modelos} (12.9,2.85);
+
+% =============== VEREDICTO (margen derecho) ===============
+\draw[fl] (ag.east) -- (15.2,1.65) -- (15.2,5.95)
+  node[nota, pos=0.55, rotate=90, above, yshift=-0.4mm]
+  {veredicto + nivel de confianza}
+  -- (app.east);
+
+\end{tikzpicture}

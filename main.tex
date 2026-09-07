@@ -1,0 +1,54 @@
+% ===================================================================
+%  Punto de entrada del entregable
+%  Entregable: short-paper-es
+%  Reestructurado 2026-09-06. Reglas en LATEX/CLAUDE.md
+% ===================================================================
+%
+%  COMPILA DESDE CUALQUIERA DE LOS DOS SITIOS, sin configurar nada:
+%
+%    a) Desde LATEX/         (Overleaf, terminal):
+%         pdflatex entregables/short-paper-es/main.tex
+%    b) Desde esta carpeta   (VS Code + LaTeX Workshop, latexmk):
+%         pdflatex main.tex
+%
+%  En LaTeX las rutas de \input son relativas al DIRECTORIO DE TRABAJO,
+%  no al del archivo. El \IfFileExists de abajo detecta desde donde se
+%  lanzo la compilacion y ajusta \HERE, \ROOT y \FIGS. Sin eso, uno de
+%  los dos modos siempre falla.
+%
+\documentclass[conference]{IEEEtran}
+
+% --- deteccion del directorio de compilacion -----------------------
+\IfFileExists{preambulo.tex}{%
+  % CWD = entregables/short-paper-es/   (VS Code / latexmk)
+  \newcommand{\HERE}{}%
+  \newcommand{\ROOT}{../../}%
+  \newcommand{\FIGS}{../../comun/figuras/es/}%
+}{%
+  % CWD = LATEX/                          (Overleaf / terminal)
+  \newcommand{\HERE}{entregables/short-paper-es/}%
+  \newcommand{\ROOT}{}%
+  \newcommand{\FIGS}{comun/figuras/es/}%
+}
+% -------------------------------------------------------------------
+
+\input{\HERE preambulo}
+
+% \graphicspath tiene que ir DESPUES del preambulo: graphicx se carga alli.
+\expandafter\graphicspath\expandafter{\expandafter{\FIGS}}
+
+\begin{document}
+\input{\HERE metadatos}
+
+\input{\HERE secciones/01-introduccion}
+\input{\HERE secciones/02-trabajo-relacionado}
+\input{\HERE secciones/03-contexto}
+\input{\HERE secciones/04-metodo}
+\input{\HERE secciones/05-validacion}
+\input{\HERE secciones/06-conclusiones}
+% Bibliografia local: solo las obras citadas y en orden de primera aparicion
+% (IEEE Editorial Style Manual). Regenerar con _writing-config/bib.py tras
+% cambiar las citas o la bibliografia compartida.
+\input{\HERE bibliografia}
+
+\end{document}

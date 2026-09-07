@@ -1,0 +1,63 @@
+%% [AI DRAFT] Borrador generado para discusión (Modo C, etapa 3).
+%% Citas verificadas contra el PDF. Sin marcadores [VERIFY] pendientes.
+
+\section{CONTEXTO}
+
+Esta sección delimita el marco conceptual y técnico que sustenta la arquitectura desarrollada. 
+Para ello, se fundamenta el entorno económico de aplicación, se define la naturaleza de los atributos extraíbles, 
+se contrasta el método de lectura frente a las técnicas de recolección automatizada, y se establecen 
+las reglas de interpretación para el manejo de evidencia insuficiente.
+
+\subsection{Comercio digital y confianza en el Perú}
+
+El comercio electrónico peruano opera en un entorno donde la adopción del pago digital no está acompañada por un nivel equivalente de confianza del consumidor. 
+Un análisis comparado de sistemas de pago en economías emergentes reporta que la falta de confianza en las instituciones es una barrera clave, provocando que
+solo el 57\,\% de los adultos utilice pagos digitales, frente al 64\,\% global \cite{ref26}.
+Esta desconfianza genera un impacto directo en el mercado legítimo, ya que la intención y continuidad de compra en canales digitales dependen fuertemente del riesgo percibido por el usuario
+\cite{ref21} \cite{ref6}. 
+Por lo tanto, la incapacidad de verificar a un vendedor desconocido antes del pago no solo afecta a las víctimas de fraude, 
+sino que impone una fricción comercial sobre los vendedores honestos.
+
+\subsection{Características extraíbles del lado del cliente}
+
+Para efectos de esta arquitectura, se define como \emph{característica extraíble del lado del cliente} a todo atributo de una publicación que cumpla tres condiciones simultáneas: es visible para el comprador antes del pago, reside en el documento ya entregado al navegador, y no requiere acceso a interfaces internas de la plataforma. 
+Atributos como la puntuación del producto, el número de reseñas y el nombre de dominio cumplen estrictamente con estos criterios.
+
+Esta distinción separa el presente trabajo de la línea dominante en detección de fraude, 
+la cual se apoya en telemetría interna (registros de transacciones, huellas de dispositivo, grafos de
+interacción) completamente inaccesible para el comprador \cite{ref28}. Por su parte,  el comprador dispone de un
+conjunto de características restringido, por lo que la pregunta central que este trabajo aborda es si dichos datos accedibles bastan para 
+producir una advertencia útil.
+
+\subsection{Lectura del DOM y recolección automatizada}
+
+La operación que realiza la extensión requiere una caracterización precisa, con consecuencias
+técnicas y no solo terminológicas. Una revisión sistemática de noventa y un estudios define el
+\textit{web scraping} y el \textit{web crawling} como el proceso automatizado de extracción de
+datos en el que las herramientas de rastreo navegan a través de múltiples páginas
+\cite{ref24}. La extensión propuesta no realiza ninguna de las dos operaciones: no navega,
+porque es el usuario quien decide qué ficha abrir; no recorre múltiples páginas, porque opera
+sobre el documento que el navegador ya renderizó; y no emite peticiones adicionales hacia la
+plataforma. Su operación consiste en interpretar, en beneficio de quien la ejecuta, contenido
+que ya le había sido entregado.
+
+Esta caracterización acota también las limitaciones del enfoque. La misma revisión advierte
+que las herramientas apoyadas en selectores predefinidos son susceptibles a cambios de
+maquetación, y que entre los desafíos del área figuran los riesgos legales \cite{ref24}. La
+primera observación se declara como amenaza a la validez en la Sección~V-C; la segunda es la
+razón para no retransmitir contenido de la plataforma más allá de las características que el
+veredicto requiere.
+
+\subsection{Protección de pago declarada}
+
+Las plataformas de comercio de mayor tamaño publican esquemas mediante los cuales retienen el
+pago hasta la conformidad del comprador o garantizan su devolución ante incumplimiento. Esa
+declaración es un compromiso público y verificable en la propia ficha, y constituye por ello
+una característica legítima.
+
+Su ausencia, en cambio, no es informativa en el mismo sentido: un vendedor independiente
+puede ofrecer condiciones equivalentes sin anunciarlas, o anunciarlas donde la extensión no
+alcanza a leer. Tratar el silencio como evidencia de inseguridad convertiría una limitación
+del observador en una acusación sobre el observado, tanto más cuanto que las contramedidas
+disponibles se despliegan y se financian del lado del comercio \cite{ref30} y su ausencia
+visible correlaciona con el tamaño del vendedor antes que con su honestidad.

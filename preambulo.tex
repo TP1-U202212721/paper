@@ -1,0 +1,46 @@
+% ===================================================================
+%  Preambulo: paquetes y ajustes de clase
+%  Entregable: short-paper-es
+%  Reestructurado 2026-09-06. Reglas en LATEX/CLAUDE.md
+% ===================================================================
+%% PUNTO DE PARTIDA: copia del preambulo de ieee-journal-es para que este
+%% entregable compile desde el dia uno. AJUSTAR a los requisitos reales de
+%% este formato/revista cuando se defina el venue. No asumir que son iguales.
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+% Si babel entra en conflicto, comenta esta linea y los tres \renewcommand
+% que estan justo despues de \begin{document}.
+\usepackage[spanish,es-noquoting,es-nodecimaldot,es-nolists,es-tabla]{babel}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{float}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{listings}
+
+% TikZ: la Fig. 1 (arquitectura) es vectorial, en figuras/arquitectura.tex
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+% \graphicspath lo fija main.tex: depende del directorio de compilacion.
+
+% Evita que LaTeX estire los espacios verticales para cuadrar el fondo de
+% cada columna. Elimina los huecos grandes entre parrafos.
+\raggedbottom
+
+% Parametros de flotantes mas permisivos: reduce el numero de figuras que
+% "no caben" y terminan empujadas a paginas posteriores.
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.7}
+

@@ -1,0 +1,51 @@
+% ===================================================================
+%  Metadatos: titulo, autores, abstract, keywords
+%  Entregable: short-paper-es
+%  Reestructurado 2026-09-06. Reglas en LATEX/CLAUDE.md
+% ===================================================================
+%% Autores y ORCID identicos en TODOS los entregables.
+%% Fuente unica de verdad: CLAUDE.md, seccion 7 bis (Autoria).
+%% El TITULO, ABSTRACT y KEYWORDS de abajo son heredados del ES: ajustarlos
+%% a lo que pida este formato/revista.
+
+\renewcommand{\figurename}{Fig.}
+\renewcommand{\tablename}{TABLA}
+\renewcommand{\refname}{REFERENCIAS}
+\renewcommand{\thesubsubsection}{\arabic{subsubsection}}
+\renewcommand{\thesubsection}{\arabic{subsection}}
+\renewcommand{\theparagraph}{\alph{paragraph}}
+
+\title{Antes del Click: Análisis de Riesgo del Lado del Cliente para Mitigar Estafas en Compras Digitales}
+
+\author{
+\IEEEauthorblockN{Mathias Alejandro Jave Diaz}
+\IEEEauthorblockA{\textit{Ingeniería de Software} \\
+\textit{Universidad Peruana de} \\
+\textit{Ciencias Aplicadas} \\
+Lima, Perú \\
+0009-0009-3705-505X}
+\and
+\IEEEauthorblockN{Alex Ramon Alberto Avila Asto}
+\IEEEauthorblockA{\textit{Ingeniería de Software} \\
+\textit{Universidad Peruana de} \\
+\textit{Ciencias Aplicadas} \\
+Lima, Perú \\
+0009-0008-5624-8482}
+\and
+\IEEEauthorblockN{Fidel Eugenio Garcia Rojas}
+\IEEEauthorblockA{\textit{Ingeniería de Software} \\
+\textit{Universidad Peruana de} \\
+\textit{Ciencias Aplicadas} \\
+Lima, Perú \\
+0009-0007-4364-0058}
+}
+
+\maketitle
+
+\begin{abstract}
+Los métodos eficaces contra el fraude en el comercio electrónico operan del lado de la plataforma utilizando telemetría interna, dejando al consumidor desprotegido en el momento de decisión. La evidencia indica que la autoconciencia no evita la victimización y que las verificaciones de legitimidad suelen realizarse después de efectuar el pago. Para abordar esta brecha, este artículo propone una arquitectura basada en una extensión de navegador que estima el riesgo de estafa directamente en el equipo del cliente. El sistema evalúa ocho características (como la veracidad del dominio y la autenticidad de reseñas) interpretando el documento HTML ya renderizado, sin enviar peticiones adicionales a la plataforma del vendedor. Se incorpora una regla estricta que distingue el riesgo detectado de la evidencia insuficiente, asegurando que la falta de información en una ficha de producto nunca se presente como seguridad. La evaluación diagnóstica sobre el conjunto de datos disponible reporta que cinco algoritmos de familias distintas clasifican la partición de prueba sin error y con desviación nula. Este resultado demuestra que el conjunto de datos es separable por construcción, lo cual impide estimar el desempeño algorítmico frente a vendedores fraudulentos reales. Como solución metodológica, el estudio define un diseño experimental estructurado para someter la herramienta a pruebas empíricas de eficacia y usabilidad con usuarios.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Comercio electrónico, compras digitales, extensión de navegador, riesgo de estafas, riesgo del lado del cliente
+\end{IEEEkeywords}

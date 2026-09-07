@@ -1,0 +1,50 @@
+%% [AI DRAFT] Borrador generado para discusión (Modo C, etapa 3).
+%% Citas verificadas contra el PDF. Sin marcadores [VERIFY] pendientes.
+
+\section{CONCLUSIONES Y TRABAJO FUTURO}
+
+Este trabajo ha presentado el diseño de un sistema que estima el riesgo de estafa en el punto
+de decisión de compra, a partir de características que el comprador ya tiene delante y sin acceso
+privilegiado a la plataforma. Tres conclusiones se desprenden del diseño.
+
+La primera es que la evaluación de riesgo puede desplazarse desde el juicio del comprador
+hacia el sistema sin requerir la cooperación de la plataforma: las ocho características de la
+Tabla~\ref{tab:senales} se derivan del contenido que el navegador ya recibió, lo que distingue
+la propuesta de la línea dominante en detección de fraude, que alcanza desempeños elevados
+pero requiere telemetría interna \cite{ref28}.
+
+La segunda es que la regla de abstención explícita no es un detalle de implementación sino una
+condición de diseño. Un instrumento que presentara como seguro aquello que solo desconoce
+trasladaría al comprador un riesgo que no ha evaluado, y penalizaría a comercios legítimos que
+simplemente no publicitan sus garantías.
+
+La tercera es que intervenir sobre la información del comprador tiene fundamento teórico y no
+solo utilidad práctica: la cantidad de reseñas falsas en equilibrio decrece con la fracción de
+consumidores capaces de interpretar correctamente los indicadores de una ficha \cite{ref29},
+de modo que el efecto de la herramienta no se agota en quien la instala.
+
+La limitación principal ha sido declarada a lo largo del artículo: la arquitectura
+no ha sido implementada. El único resultado experimental disponible es de naturaleza
+diagnóstica y apunta contra los propios datos: cinco algoritmos clasifican sin error la
+partición de prueba, lo que revela que el conjunto es separable por construcción y que las
+métricas obtenidas sobre él no estiman la calidad de la estimación de riesgo. Lo presentado es un diseño y un protocolo para
+someterlo a prueba, no un sistema evaluado.
+
+El trabajo futuro tiene un orden obligado, porque cada paso condiciona la interpretación del
+siguiente. El primero es medir qué características resultan legibles en fichas reales. Importa
+menos el porcentaje global que su reparto entre plataformas grandes y vendedores
+independientes: si la cobertura se concentrara en las primeras, que son las que ya ofrecen
+garantías al comprador, el sistema fallaría precisamente donde este se encuentra más expuesto.
+El segundo es construir un conjunto de datos más sólido, cuyas etiquetas provengan de una
+fuente independiente del vector de entrada y cuyo tamaño y diversidad reflejen la variedad de
+fichas que el sistema encontrará en operación; sin él, cualquier métrica seguirá midiendo la
+regla que generó esas etiquetas, como muestra la Sección~V-A. Solo una vez resueltos ambos resulta
+informativa la evaluación con usuarios.
+
+Una línea distinta, que este trabajo no aborda, es la detección del comportamiento fraudulento
+del vendedor: determinar si un vendedor defrauda exige evidencia sobre operaciones consumadas
+y una definición operativa de fraude que el comprador no puede establecer desde la ficha. Es
+un problema de clasificación con verdad de referencia, no de estimación de riesgo previa a la
+decisión, y abordarlo requeriría la colaboración de las plataformas o el acceso a denuncias
+verificadas; constituye por ello una recomendación para investigaciones posteriores antes que
+una extensión del sistema aquí descrito.

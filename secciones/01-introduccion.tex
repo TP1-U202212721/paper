@@ -1,0 +1,66 @@
+%% [AI DRAFT] Borrador generado para discusión (Modo C, etapa 3).
+%% Citas verificadas contra el PDF. Sin marcadores [VERIFY] pendientes.
+
+\section{INTRODUCCIÓN}
+
+La prevención de estafas en compras digitales descansa hoy, en buena medida, sobre la
+prudencia del comprador. Se le recomienda revisar la reputación del vendedor, desconfiar de
+precios inverosímiles y comprobar la dirección del sitio antes de pagar. El supuesto
+implícito es que un comprador informado se protege a sí mismo.
+
+La evidencia no sostiene ese supuesto. Una encuesta a 820 adultos, replicada sobre una
+segunda muestra de 629, encontró que la autoconciencia sobre privacidad digital no predijo
+significativamente la victimización, mientras que la sobreconfianza sí la incrementó, con una
+razón de momios (\emph{odds ratio}) de 1.437 (IC 95\,\% [1.234, 1.673]); se concluye allí que el conocimiento,
+por sí solo, no impide que el usuario termine siendo víctima \cite{ref27}. El complemento
+conductual es igualmente desfavorable: la verificación del comprador tiende a ocurrir después
+del evento, cuando el pago ya se realizó \cite{ref3}.
+
+El problema se agrava porque los indicadores que el comprador aprendió a usar han perdido
+poder discriminante. Numerosas páginas de suplantación emplean hoy certificados válidos de capa de conexión segura (SSL),
+obtenidos mediante servicios automatizados, de modo que apoyarse únicamente en la verificación
+SSL resulta insuficiente \cite{ref25}. Y se ha demostrado formalmente que la reputación
+visible es manipulable
+por diseño: en equilibrio, el vendedor auténtico no adquiere reseñas falsas, mientras que el
+falsificador puede hacerlo para inducir a error \cite{ref29}. La conexión cifrada y la buena puntuación,
+las dos heurísticas más difundidas, son precisamente las que un defraudador competente puede
+exhibir.
+
+Existen métodos eficaces contra el fraude, pero se despliegan en un plano al que el
+comprador no accede. Los sistemas
+desplegados por el operador de la plataforma alcanzan desempeños elevados apoyándose en
+telemetría interna \cite{ref28}, y las contramedidas de seguridad revisadas en la literatura
+se implementan y financian dentro de la empresa de comercio \cite{ref30}. Ninguna de ellas
+alcanza al comprador que evalúa una ficha en una plataforma o ante un vendedor que no las
+adoptó.
+
+Este trabajo propone desplazar la evaluación desde el juicio del comprador hacia una
+estimación automática que se ejecute en su propio navegador, sobre la información que él ya
+tiene delante y antes de que pague. La pregunta que aborda es si un conjunto de características
+extraíbles del lado del cliente (sin acceso privilegiado a la plataforma y sin recolección
+automatizada de datos) basta para producir una advertencia útil en el punto de decisión.
+
+El propósito de este sistema se delimita a la estimación probabilística del nivel de riesgo de un vendedor mediante una escala ordinal, no a la emisión de un dictamen categórico de fraude. 
+Esta distinción tiene dos implicancias operativas: primero, admite declaraciones explícitas de insuficiencia de evidencia en lugar de forzar decisiones binarias; 
+segundo, el sistema se evalúa en función de la mitigación de riesgo y las advertencias infundadas, en lugar de utilizar métricas de clasificación estándar 
+contra una verdad de referencia inexistente en la ficha de producto.
+
+Sus contribuciones son tres. La primera es un conjunto de ocho características de riesgo
+extraíbles desde el cliente, con una regla explícita que distingue el riesgo detectado de la
+evidencia insuficiente, de modo que la ausencia de información nunca se presente como
+seguridad. La segunda es una arquitectura de tres capas cuyo artefacto principal es una
+aplicación nativa en el navegador, es decir una extensión, acompañada de un cliente
+multiplataforma complementario; sobre ella operan un motor de riesgo, que reúne el análisis de
+dominio y la inferencia sobre vendedor y reseñas, y una capa de persistencia que hace trazable
+cada consulta, todo ello sin consultar a la plataforma del vendedor. La tercera es un
+protocolo de validación en dos fases que separa la observabilidad de las características de la
+eficacia del veredicto, junto con las amenazas a la validez que condicionan sus conclusiones.
+
+Debe precisarse desde el inicio que la arquitectura aquí descrita es una propuesta de diseño y
+no ha sido implementada, por lo que este trabajo no aporta resultados experimentales sobre
+ella.
+
+El resto del artículo se organiza de la siguiente manera. La Sección~II revisa el trabajo
+relacionado; la Sección~III explica conceptos preliminares relacionados al contexto de la
+investigación; la Sección~IV detalla la arquitectura propuesta; la Sección~V describe los
+experimentos preliminares; la Sección~VI presenta las conclusiones y el trabajo futuro.
