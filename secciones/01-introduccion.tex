@@ -1,66 +1,85 @@
-%% [AI DRAFT] Borrador generado para discusión (Modo C, etapa 3).
 %% Citas verificadas contra el PDF. Sin marcadores [VERIFY] pendientes.
 
 \section{INTRODUCCIÓN}
 
-La prevención de estafas en compras digitales descansa hoy, en buena medida, sobre la
-prudencia del comprador. Se le recomienda revisar la reputación del vendedor, desconfiar de
-precios inverosímiles y comprobar la dirección del sitio antes de pagar. El supuesto
-implícito es que un comprador informado se protege a sí mismo.
+El comercio electrónico peruano opera en un entorno donde la adopción del pago digital no está
+acompañada por un nivel equivalente de confianza del consumidor. Un análisis comparado de
+sistemas de pago en economías emergentes reporta que la falta de confianza en las
+instituciones constituye una barrera clave \cite{ref26}. Solo el 57\,\% de los adultos
+utiliza pagos digitales, frente al 64\,\% a nivel global. Esta desconfianza
+genera un impacto directo en el mercado legítimo, ya que la intención y continuidad de compra
+en canales digitales dependen fuertemente del riesgo percibido por el usuario \cite{ref21}
+\cite{ref6}. La incapacidad de verificar a un vendedor desconocido antes del pago no solo
+afecta a las víctimas de fraude, sino que impone una fricción comercial sobre los vendedores
+honestos.
 
-La evidencia no sostiene ese supuesto. Una encuesta a 820 adultos, replicada sobre una
-segunda muestra de 629, encontró que la autoconciencia sobre privacidad digital no predijo
-significativamente la victimización, mientras que la sobreconfianza sí la incrementó, con una
-razón de momios (\emph{odds ratio}) de 1.437 (IC 95\,\% [1.234, 1.673]); se concluye allí que el conocimiento,
-por sí solo, no impide que el usuario termine siendo víctima \cite{ref27}. El complemento
-conductual es igualmente desfavorable: la verificación del comprador tiende a ocurrir después
-del evento, cuando el pago ya se realizó \cite{ref3}.
+La prevención de estafas en compras digitales depende en gran medida de la capacidad del
+comprador para evaluar la fiabilidad del vendedor antes de completar una transacción. Los
+marcos de protección actuales se sustentan en heurísticas de uso extendido: verificación de
+la reputación del vendedor, desconfianza hacia precios inverosímiles y comprobación de la
+dirección del sitio web. El supuesto subyacente es que un comprador informado dispone de los
+instrumentos necesarios para protegerse.
 
-El problema se agrava porque los indicadores que el comprador aprendió a usar han perdido
-poder discriminante. Numerosas páginas de suplantación emplean hoy certificados válidos de capa de conexión segura (SSL),
-obtenidos mediante servicios automatizados, de modo que apoyarse únicamente en la verificación
-SSL resulta insuficiente \cite{ref25}. Y se ha demostrado formalmente que la reputación
-visible es manipulable
-por diseño: en equilibrio, el vendedor auténtico no adquiere reseñas falsas, mientras que el
-falsificador puede hacerlo para inducir a error \cite{ref29}. La conexión cifrada y la buena puntuación,
-las dos heurísticas más difundidas, son precisamente las que un defraudador competente puede
-exhibir.
+La evidencia empírica no respalda ese supuesto. Un estudio con una muestra de 820 adultos,
+replicado sobre una segunda cohorte de 629, demostró que la autoconciencia sobre privacidad
+digital no predijo significativamente la victimización. La sobreconfianza la incrementó
+significativamente (razón de momios de 1.437; IC 95\,\% [1.234, 1.673]),
+concluyendo que el conocimiento por sí solo no constituye una barrera efectiva contra el
+fraude \cite{ref27}. En la misma línea, la verificación del comprador tiende a ocurrir
+\emph{posterior} a que el pago ya se ha realizado \cite{ref3}.
 
-Existen métodos eficaces contra el fraude, pero se despliegan en un plano al que el
-comprador no accede. Los sistemas
-desplegados por el operador de la plataforma alcanzan desempeños elevados apoyándose en
-telemetría interna \cite{ref28}, y las contramedidas de seguridad revisadas en la literatura
-se implementan y financian dentro de la empresa de comercio \cite{ref30}. Ninguna de ellas
-alcanza al comprador que evalúa una ficha en una plataforma o ante un vendedor que no las
-adoptó.
+La eficacia de estas heurísticas se ve comprometida por la pérdida de poder discriminante
+de los indicadores tradicionales. Los certificados SSL, antes considerados un indicador de
+fiabilidad, son obtenidos actualmente mediante servicios automatizados \cite{ref25}. La
+reputación visible del vendedor ha sido demostrada como manipulable por construcción del
+mercado \cite{ref29}. Las dos heurísticas más difundidas la conexión cifrada y la buena
+puntuación son precisamente las que un defraudador competente puede exhibir legítimamente.
 
-Este trabajo propone desplazar la evaluación desde el juicio del comprador hacia una
-estimación automática que se ejecute en su propio navegador, sobre la información que él ya
-tiene delante y antes de que pague. La pregunta que aborda es si un conjunto de características
-extraíbles del lado del cliente (sin acceso privilegiado a la plataforma y sin recolección
-automatizada de datos) basta para producir una advertencia útil en el punto de decisión.
+Sin embargo, existen métodos eficaces contra el fraude que operan en un plano inaccesible
+para el comprador. Los sistemas desplegados por los operadores de plataformas alcanzan
+desempeños elevados mediante el uso de telemetría interna \cite{ref28}. Las contramedidas
+de seguridad revisadas en la literatura se implementan y financian dentro de las organizaciones
+de comercio \cite{ref30}. Ninguna de estas soluciones alcanza al comprador que evalúa una
+ficha en una plataforma o interactúa con un vendedor que no las ha adoptado.
 
-El propósito de este sistema se delimita a la estimación probabilística del nivel de riesgo de un vendedor mediante una escala ordinal, no a la emisión de un dictamen categórico de fraude. 
-Esta distinción tiene dos implicancias operativas: primero, admite declaraciones explícitas de insuficiencia de evidencia en lugar de forzar decisiones binarias; 
-segundo, el sistema se evalúa en función de la mitigación de riesgo y las advertencias infundadas, en lugar de utilizar métricas de clasificación estándar 
-contra una verdad de referencia inexistente en la ficha de producto.
+El presente trabajo propone desplazar la evaluación de riesgo desde el juicio subjetivo del
+comprador hacia un sistema de estimación automática que se ejecute en su navegador, sobre la
+información que ya tiene disponible y antes de que se efectúe el pago. La pregunta central que
+se aborda es si un conjunto de características extraíbles del lado del cliente sin acceso
+privilegiado a la plataforma y sin recolección automatizada de datos resulta suficiente
+para generar una advertencia útil en el punto de decisión.
 
-Sus contribuciones son tres. La primera es un conjunto de ocho características de riesgo
-extraíbles desde el cliente, con una regla explícita que distingue el riesgo detectado de la
-evidencia insuficiente, de modo que la ausencia de información nunca se presente como
-seguridad. La segunda es una arquitectura de tres capas cuyo artefacto principal es una
-aplicación nativa en el navegador, es decir una extensión, acompañada de un cliente
-multiplataforma complementario; sobre ella operan un motor de riesgo, que reúne el análisis de
-dominio y la inferencia sobre vendedor y reseñas, y una capa de persistencia que hace trazable
-cada consulta, todo ello sin consultar a la plataforma del vendedor. La tercera es un
-protocolo de validación en dos fases que separa la observabilidad de las características de la
-eficacia del veredicto, junto con las amenazas a la validez que condicionan sus conclusiones.
+Una advertencia se considera útil si cumple tres condiciones: (1) se genera antes de que el
+pago se efectúe, (2) se basa en al menos cuatro características verificables, y (3)
+distingue explícitamente entre riesgo detectado e información insuficiente. Esta última
+condición es crítica: un sistema que presentara como seguro aquello que solo desconoce
+trasladaría al comprador un riesgo que no ha evaluado.
 
-Debe precisarse desde el inicio que la arquitectura aquí descrita es una propuesta de diseño y
-no ha sido implementada, por lo que este trabajo no aporta resultados experimentales sobre
-ella.
+El alcance de este sistema se delimita a la estimación probabilística del nivel de riesgo de
+un vendedor mediante una escala ordinal, excluyendo la emisión de un dictamen categórico de
+fraude. Esta distinción tiene dos implicaciones operativas. Por un lado, admite declaraciones
+explícitas de insuficiencia de evidencia en lugar de forzar decisiones binarias. Por otro,
+el sistema se evalúa en función de la mitigación de riesgo y la reducción de advertencias
+infundadas, en lugar de utilizar métricas de clasificación estándar contra una verdad de
+referencia inexistente en la ficha de producto.
+
+Las contribuciones de este trabajo son tres. En primer lugar, un conjunto de ocho
+características de riesgo extraíbles desde el cliente. Estas características vienen acompañadas
+de una regla explícita que distingue el riesgo detectado de la evidencia insuficiente,
+garantizando que la ausencia de información nunca se presente como seguridad. Esta distinción
+constituye una contribución conceptual al campo: los sistemas de detección de fraude existentes
+operan sobre datos completos y no abordan el problema de la información parcial que enfrenta
+el comprador. En segundo lugar, una arquitectura de tres capas cuyo componente principal es una
+extensión de navegador. Se presentan los diseños de los módulos clave y se entrenaron
+prototipos de los clasificadores de vendedor y reseñas. En tercer lugar, un protocolo de
+validación en dos fases que separa la observabilidad de las características de la eficacia del
+veredicto, identificando las amenazas a la validez que condicionan las conclusiones.
+
+Cabe precisar que la extensión de navegador y el analizador de dominio no han sido
+implementados; los clasificadores han sido entrenados sobre datos sintéticos cuyas
+limitaciones se analizan en la Sección~IV. El presente trabajo es, por tanto, una propuesta
+arquitectónica con componentes parcialmente validados, no un sistema completo evaluado.
 
 El resto del artículo se organiza de la siguiente manera. La Sección~II revisa el trabajo
-relacionado; la Sección~III explica conceptos preliminares relacionados al contexto de la
-investigación; la Sección~IV detalla la arquitectura propuesta; la Sección~V describe los
-experimentos preliminares; la Sección~VI presenta las conclusiones y el trabajo futuro.
+relacionado; la Sección~III detalla la arquitectura propuesta; la Sección~IV describe el
+protocolo de validación; la Sección~V presenta las conclusiones y el trabajo futuro.

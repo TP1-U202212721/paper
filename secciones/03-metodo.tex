@@ -1,0 +1,376 @@
+%% Citas verificadas contra el PDF; no hay marcadores [VERIFY] pendientes.
+
+\section{MÉTODO}
+
+Esta sección utiliza la siguiente terminología:
+\begin{itemize}
+    \item \emph{Extensión}: aplicación de navegador que extrae características del DOM.
+    \item \emph{Motor de riesgo}: conjunto de servicios que estiman el nivel de riesgo
+    (excluye persistencia).
+    \item \emph{Sistema}: la arquitectura completa (extensión + motor de riesgo + persistencia).
+\end{itemize}
+
+La unidad de análisis es una \emph{ficha de producto} que el comprador tiene abierta en su
+navegador: el sistema no recorre catálogos ni consulta interfaces privilegiadas de la
+plataforma, sino que opera sobre la misma información que el comprador ya tiene delante. Esta
+restricción gobierna todas las decisiones de diseño que siguen. Separa esta propuesta de los
+sistemas de detección desplegados por el operador del comercio \cite{ref28}.
+
+\subsection{Características extraíbles del lado del cliente}
+
+Para los efectos de esta arquitectura, se define como \emph{característica extraíble del lado
+del cliente} a todo atributo de una publicación que cumpla tres condiciones simultáneas: ser
+visible para el comprador antes del pago, residir en el documento ya entregado al navegador y
+no requerir acceso a interfaces internas de la plataforma. La puntuación del producto, el
+número de reseñas y el nombre de dominio cumplen estrictamente con estos criterios.
+
+Esta distinción separa el presente trabajo de la línea dominante en detección de fraude, cuya
+dependencia de telemetría interna ya mencionada. El comprador
+dispone de un conjunto de características restringido, por lo que la pregunta central que este
+trabajo aborda es si dichos datos accedibles resultan suficientes para producir una advertencia
+útil.
+
+\subsection{Lectura del DOM y recolección automatizada}
+
+La operación que realiza la extensión requiere una caracterización precisa. Una revisión
+sistemática define el \textit{web scraping} y el \textit{web crawling} como el proceso
+automatizado de extracción de datos en el que las herramientas navegan a través de múltiples
+páginas \cite{ref24}. La extensión propuesta no realiza ninguna de las dos operaciones: no
+navega, porque es el usuario quien decide qué ficha abrir; no recorre múltiples páginas, porque
+opera sobre el documento que el navegador ya renderizó. Su operación consiste en interpretar
+contenido que ya le había sido entregado.
+
+Esta caracterización acota también las limitaciones del enfoque. La misma revisión advierte
+que las herramientas apoyadas en selectores predefinidos son susceptibles a cambios de
+maquetación, y que entre los desafíos del área figuran los riesgos legales \cite{ref24}. La
+primera observación se declara como amenaza a la validez más adelante. La segunda es la
+razón para no retransmitir contenido de la plataforma más allá de las características que el
+veredicto requiere.
+
+\subsection{Protección de pago declarada}
+
+Las plataformas de comercio de mayor tamaño publican esquemas mediante los cuales retienen el
+pago hasta la conformidad del comprador o garantizan su devolución ante incumplimiento. Dicha
+declaración constituye un compromiso público y verificable en la propia ficha. Representa por
+ello una característica legítima.
+
+Su ausencia, en cambio, no es igualmente informativa: un vendedor independiente puede ofrecer
+condiciones equivalentes sin anunciarlas, o anunciarlas donde la extensión no alcanza a leer.
+Tratar el silencio como evidencia de inseguridad convertiría una limitación del observador en
+una acusación sobre el observado. Esto es tanto más problemático cuanto que las contramedidas
+disponibles se despliegan y financian del lado del comercio \cite{ref30}. Su ausencia visible
+correlaciona con el tamaño del vendedor antes que con su honestidad.
+
+La arquitectura se organiza en tres capas (cliente, motor de riesgo y persistencia) y se
+detalla más adelante. La separación en tres capas responde a la necesidad
+de desacoplar la observación del DOM (que debe ejecutarse en el cliente por razones de
+privacidad y eficiencia) del análisis de riesgo (que requiere acceso a servicios externos) y
+de la persistencia (que debe garantizar la trazabilidad sin exponer datos sensibles). Esta
+separación permite escalar cada componente de forma independiente. Facilita la sustitución de
+algoritmos de clasificación sin modificar la capa de observación.
+
+\subsection{Capa cliente: observación sin recolección automatizada}
+
+La capa cliente se implementa como una \emph{aplicación nativa en el navegador} (una
+extensión) que se activa cuando el usuario abre una ficha de producto en una plataforma
+soportada. La extensión recorre el árbol DOM ya renderizado, localiza mediante selectores los
+elementos que exponen los atributos de interés precio, puntuación, número de reseñas,
+identidad del vendedor, medios de pago anunciados, políticas de garantía y construye un
+vector de observaciones que envía al motor de riesgo. La extensión constituye el componente
+principal de esta propuesta, y no por conveniencia de implementación. Es el único punto del
+sistema que coincide, en espacio y en tiempo, con el instante en que el comprador decide.
+Se ejecuta sobre la ficha que él tiene abierta, sin mediación de la plataforma y antes de que el
+pago ocurra. Ningún otro componente de esta arquitectura coincide de ese modo con el
+instante de la decisión.
+
+El flujo de operación de la capa cliente se resume en cuatro pasos: (1) el usuario abre una
+ficha de producto; (2) la extensión detecta la carga y extrae características del DOM; (3)
+construye un vector de observaciones; y (4) envía el vector al motor de riesgo mediante
+petición HTTP segura. La extensión no almacena datos sensibles del usuario.
+
+Un cliente complementario consume el mismo servicio y cubre la compra que ocurre fuera del
+navegador de escritorio. Opera sobre lo que el usuario le proporciona, sin acceso al documento
+renderizado, de modo que resolverá menos características.
+
+Esta capa existe porque la advertencia que ha de llegar antes del pago debe producirla el
+sistema y no el juicio del comprador \cite{ref27, ref3}. La ventaja técnica es que la
+información necesaria ya fue entregada al navegador. El sistema no emite hacia la plataforma
+del vendedor ninguna petición que el comprador no hubiera cursado en cualquier caso.
+
+«Del lado del cliente» no significa, sin embargo, «sin servidor»: el vector observado viaja al
+motor de riesgo, el analizador de dominio consulta servicios de registro, y cada consulta
+queda registrada. La propuesta elimina la dependencia respecto de la plataforma del vendedor
+a costa de introducir un nuevo tercero de confianza, con la política de retención y
+anonimización que ello exige. Su otra contrapartida es la fragilidad ante cambios de
+maquetación \cite{ref24}.
+
+\subsection{Conjunto de características y regla de abstención ante evidencia ausente}
+
+El motor de riesgo trabaja sobre ocho características, resumidas en la tabla de características.
+Cada característica se define junto con la capa que la computa, su dominio de valores y   de
+manera central para esta propuesta   el valor que toma cuando no puede determinarse.
+
+\begin{table}[t]
+\caption{Conjunto de características, origen y comportamiento ante evidencia ausente}
+\label{tab:senales}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}p{2.05cm}p{1.35cm}p{1.7cm}p{2.1cm}@{}}
+\toprule
+\textbf{Característica} & \textbf{Se computa en} & \textbf{Valores} & \textbf{Si no hay evidencia} \\
+\midrule
+Protección de pago declarada & Cliente & declarada / no declarada & \textit{no verificable} \\
+Veracidad de dominio & Backend & escala ordinal & \textit{no verificable} \\
+Reputación del vendedor & Backend & escala ordinal & \textit{no verificable} \\
+Autenticidad de reseñas & Backend & proporción estimada & \textit{no verificable} \\
+Puntuación del producto & Cliente & continua & ausente \\
+Presencia de reseñas & Cliente & binaria & ausente \\
+Políticas de garantía & Cliente & ordinal & \textit{no verificable} \\
+Volumen de ventas & Cliente & entero & ausente \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La \emph{protección de pago declarada} fija el criterio que rige al resto. Plataformas como
+MercadoLibre, Amazon o AliExpress declaran en la ficha que retienen el pago o que garantizan
+la devolución ante incumplimiento, y la extensión detecta esa declaración; cuando no la
+encuentra, el sistema no infiere que el pago sea inseguro sino que registra la característica
+como \emph{no verificable}, según la distinción establecida en la subsección anterior.
+
+Esta regla se aplica de manera uniforme: para toda característica se distingue entre valor
+conocido, valor ausente por no aplicar y valor indeterminado por falta de evidencia. Una
+característica se considera \emph{resuelta} cuando toma un valor conocido; los otros dos
+estados la dejan sin resolver, y la tabla de características indica cuál adopta cada una
+cuando la ficha no aporta evidencia. El agregador propaga esa distinción hasta el veredicto
+mediante dos condiciones que deben cumplirse conjuntamente.
+
+La primera es de cobertura. Sea $r$ el número de características resueltas de las ocho; el
+sistema exige $r \geq 4$. El umbral mínimo se estableció para garantizar al menos una
+característica por dimensión de riesgo (tres dimensiones) más una redundancia. Un umbral de
+tres podría satisfacer la condición dimensional sin margen de error; uno de cinco reduciría
+excesivamente los casos en que el sistema puede emitir un veredicto. La segunda es de
+suficiencia por dimensión. Las ocho características cubren tres dimensiones de riesgo distintas:
+la identidad del sitio (veracidad de dominio), la fiabilidad del vendedor (reputación, volumen
+de ventas, políticas de garantía y protección de pago declarada) y la evidencia de la
+comunidad (puntuación, presencia y autenticidad de reseñas). El sistema exige que al menos una
+característica de cada dimensión se haya resuelto.
+
+La elección de ocho características se justifica por la necesidad de cubrir las tres dimensiones
+con al menos dos indicadores por dimensión, lo que permite detectar inconsistencias y reducir
+la influencia de valores atípicos. Un conjunto menor limitaría la capacidad de discriminación;
+uno mayor aumentaría la complejidad de extracción sin beneficio proporcional en la precisión
+del veredicto, dada la información disponible en el lado del cliente.
+
+Cuando ambas condiciones se satisfacen, el veredicto se emite con un nivel de confianza
+derivado de la cobertura: alta si $r \geq 6$, media en caso contrario. Cuando alguna falla, el
+sistema no emite riesgo sino \emph{evidencia insuficiente}, junto con la lista de
+características que no pudo resolver.
+
+La segunda condición distingue esta regla de un simple conteo: un umbral global trataría por
+igual la pérdida de tres características redundantes y la de la única que informa sobre la
+identidad del sitio, dejando al comprador sin protección frente a la suplantación. La
+justificación de fondo es la asimetría de costos: presentar como seguro aquello que solo es
+desconocido traslada al comprador un riesgo que el sistema no ha evaluado.
+
+\subsection{Descomposición en servicios}
+
+El motor de riesgo de la Fig.~\ref{fig:arquitectura} no es un bloque único: se despliega en
+cuatro servicios desacoplados. Un analizador de veracidad de dominio verifica la legitimidad
+del sitio web consultando registros DNS y patrones morfológicos; un analizador de reputación
+evalúa el historial y las políticas del vendedor; una API de estimación de riesgo calcula la
+probabilidad de estafa mediante un bosque aleatorio; y una API de detección de reseñas falsas
+identifica contenido potencialmente fraudulento mediante un modelo DistilBERT. La API
+centralizadora recibe las observaciones de la extensión, delega las características
+relevantes a los cuatro servicios y agrega los resultados para emitir el veredicto. La
+persistencia se resuelve sobre una base relacional que almacena las consultas y sus
+resultados para trazabilidad y reentrenamiento. La separación responde a una propiedad que
+el sistema necesita: cada servicio puede actualizarse de forma independiente cuando cambian
+las características disponibles o los patrones lingüísticos del fraude, sin interrumpir el
+servicio ni versionar la interfaz que consume la extensión.
+
+El flujo de operación del motor de riesgo se resume en cuatro pasos: (1) la API centralizadora
+recibe el vector de observaciones de la extensión; (2) delega las características relevantes
+a los cuatro servicios; (3) cada servicio procesa de forma independiente y en paralelo; y (4)
+la API centralizadora combina los resultados y almacena la consulta en la base de datos. Esta
+separación permite escalar horizontalmente cada componente según la carga.
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figuras/arquitectura-logica.jpeg}
+\caption{Arquitectura lógica propuesta. La capa cliente (extensión de navegador) extrae
+características del DOM renderizado y las envía a la API centralizadora del motor de riesgo.
+El motor de riesgo se descompone en cuatro servicios: un analizador de veracidad de dominio,
+un analizador de reputación, una API de estimación de riesgo y una API de detección de
+reseñas falsas. La API centralizadora agrega los resultados y almacena las consultas en la
+capa de persistencia para trazabilidad y reentrenamiento.}
+\label{fig:arquitectura}
+\end{figure*}
+
+\begin{table}[t]
+\caption{Componentes de la arquitectura y sus funciones principales}
+\label{tab:componentes}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}p{2.2cm}p{2.0cm}p{3.2cm}@{}}
+\toprule
+\textbf{Componente} & \textbf{Capa} & \textbf{Función} \\
+\midrule
+Ficha de Producto & Cliente & Fuente de datos (DOM renderizado) \\
+Extensión de navegador & Cliente & Extrae 8 características del DOM \\
+Aplicación web & Cliente & Autenticación y acceso a servicios \\
+API centralizadora & Motor de riesgo & Recibe, delega y agrega resultados \\
+Analizador de dominio & Motor de riesgo & Verifica veracidad del sitio web \\
+Analizador de reputación & Motor de riesgo & Evalúa historial del vendedor \\
+API de estimación de riesgo & Motor de riesgo & Calcula probabilidad de estafa \\
+API de detección de reseñas & Motor de riesgo & Identifica contenido fraudulento \\
+Base de Datos & Persistencia & Almacena para trazabilidad y reentrenamiento \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Analizador de veracidad de dominio}
+
+El analizador de dominio recibe el nombre de host de la ficha y devuelve una estimación
+ordinal de veracidad. Su entrada se compone de atributos del registro del dominio, de la
+cadena de resolución incluidos los registros de nombre canónico (CNAME) y de la coincidencia
+con patrones morfológicos asociados a campañas de suplantación.
+
+Este módulo es necesario porque ni el certificado SSL ni las listas de bloqueo del navegador
+discriminan ya la suplantación \cite{ref25}. La ventaja de analizar registro y resolución en
+lugar de contenido es que estos atributos son costosos de falsificar. Se ha mostrado que
+características derivadas del registro permiten detectar URL de \textit{phishing} en dominios
+aparcados \cite{ref7}, lo que sostiene la viabilidad del enfoque sobre esta clase de
+atributos. El módulo no reemplaza la comprobación de
+certificado, que la literatura de seguridad en comercio electrónico caracteriza como el
+control fundacional y de menor costo \cite{ref30}, sino que la complementa en la dimensión
+donde aquella dejó de ser informativa.
+
+El flujo de operación del analizador de dominio se resume en tres pasos: (1) recibe el nombre
+de host de la extensión; (2) consulta servicios de registro y resolución de nombres para
+obtener atributos del dominio; y (3) aplica reglas de clasificación para emitir una estimación
+ordinal de veracidad (alta, media o baja). El módulo opera de forma asincrónica y no bloquea
+la emisión del veredicto principal.
+
+\subsection{Modelos de inferencia sobre vendedor y reseñas}
+
+\begin{table}[t]
+\caption{Configuración del clasificador de riesgo del vendedor}
+\label{tab:rf}
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}p{4.3cm}p{3.4cm}@{}}
+\toprule
+\textbf{Parámetro} & \textbf{Valor} \\
+\midrule
+Algoritmo                     & Bosque aleatorio \\
+Número de árboles             & 100 \\
+Variables de entrada          & 7 \\
+Clases                        & Riesgo alto / moderado / bajo \\
+Registros                     & 10\,000 \\
+Distribución de clases        & 3\,333 / 3\,334 / 3\,333 \\
+Partición entrenamiento--prueba & 80 / 20 \\
+Semilla                       & 42 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table*}[t]
+\caption{Configuración del clasificador de reseñas fraudulentas}
+\label{tab:modelo}
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}p{3.9cm}p{3.6cm}p{4.1cm}p{4.3cm}@{}}
+\toprule
+\multicolumn{2}{@{}l}{\textbf{Arquitectura}} & \multicolumn{2}{l@{}}{\textbf{Ajuste fino}} \\
+\cmidrule(r){1-2}\cmidrule(l){3-4}
+Modelo base                  & DistilBERT              & Optimizador                    & AdamW \textit{fused} \\
+Cabezal                      & Clasif. de secuencias   & Tasa de aprendizaje            & $2\times10^{-5}$ \\
+Capas del codificador        & 6                       & Planificador                   & Lineal, sin calentamiento \\
+Cabezas de atención          & 12                      & Decaimiento de pesos           & 0.01 \\
+Dimensión de representación  & 768                     & $\beta_1$, $\beta_2$, $\epsilon$ & 0.9,\ 0.999,\ $10^{-8}$ \\
+Dimensión \textit{feed-forward} & 3072                 & Recorte de gradiente           & 1.0 \\
+Parámetros                   & 66.96 M (FP32)          & Tamaño de lote (entr./eval.)   & 16 / 16 \\
+Activación                   & GELU                    & Acumulación de gradiente       & 1 \\
+\textit{Dropout} gen./aten./clasif. & 0.1 / 0.1 / 0.2  & Épocas                         & 1 \\
+Longitud máx. de secuencia   & 512 \textit{tokens}     & Precisión numérica             & FP32 \\
+Tamaño de vocabulario        & 30\,522                 & Evaluación                     & Por época \\
+Clases                       & \textsc{real}, \textsc{fake} & Semilla                   & 42 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Dos componentes de aprendizaje automático completan el motor. El primero estima el riesgo del
+vendedor a partir del vector de características extraídas y devuelve un nivel ordinal; el
+segundo estima la proporción de reseñas presumiblemente fraudulentas en la ficha. Sus
+configuraciones se resumen en las Tablas~\ref{tab:rf} y~\ref{tab:modelo}.
+
+Para la estimación de riesgo del vendedor se emplea un bosque aleatorio y no una arquitectura
+de mayor capacidad, por tres propiedades que el problema exige. La dimensionalidad: el vector
+de entrada contiene ocho características heterogéneas   binarias, categóricas, discretas y
+continuas   , un régimen en el que los métodos de ensamble por árboles operan sin normalización
+ni codificaciones adicionales. La interpretabilidad: el modelo expone la contribución relativa
+de cada característica, con la que se construye la explicación que acompaña al veredicto. Y el
+costo: la inferencia sobre cien árboles es despreciable frente a la latencia de red de la
+consulta.
+
+El clasificador del que se dispone actualmente difiere de esta especificación: fue entrenado
+sobre siete entradas, sin la veracidad de dominio que este trabajo incorpora. Añadirla exige
+reentrenar el modelo sobre un conjunto que la contenga, y su ausencia es consecuencia de que
+este trabajo describe la arquitectura propuesta y no una implementación ya construida.
+
+El segundo componente estima la autenticidad de las reseñas con DistilBERT, un codificador
+transformador destilado cuya configuración de ajuste recoge la tabla de configuración. La
+elección de una variante destilada responde a una restricción operativa: la inferencia ocurre
+entre la consulta de la extensión y la emisión del veredicto, de modo que su costo incide
+sobre el tiempo que el comprador espera. Seis capas y 66.96 millones de parámetros reducen
+ese costo frente a un codificador completo; la ejecución en precisión de 32 bits sobre unidad
+central de proceso evita exigir aceleración por hardware. La contrapartida es una capacidad de
+representación menor, cuya repercusión sobre la exactitud debe cuantificarse en la validación.
+
+El ajuste fino se realizó durante una época con tasa de aprendizaje de $2\times10^{-5}$ y
+planificador lineal, valores habituales para adaptar un codificador preentrenado sin alterar
+las representaciones aprendidas. La entrada del clasificador no es únicamente el texto de la
+reseña: se serializan conjuntamente la categoría del producto, la calificación asignada y el
+texto, de modo que el modelo dispone del contexto en el que la reseña fue emitida. Esta
+decisión responde a que una misma formulación puede resultar verosímil o anómala según la
+calificación que la acompaña. La brevedad del ajuste   una sola época   constituye una
+limitación que la Sección~IV recoge. Este trabajo no evalúa el
+clasificador de reseñas: la tabla de configuración documenta su configuración para hacer
+reproducible el componente. Ni el corpus de ajuste ni sus métricas de prueba forman parte de
+lo reportado aquí, y su evaluación queda comprendida en el trabajo futuro de la Sección~V.
+
+La inferencia sobre reseñas es necesaria porque, según el resultado de equilibrio citado en
+la Sección~II, la reputación visible es manipulable por construcción \cite{ref29}: tomar la
+puntuación agregada como indicador de confianza coincide con el comportamiento que el vendedor
+fraudulento busca inducir. La arquitectura incorpora por ello la estimación de autenticidad de
+las reseñas como característica independiente de la puntuación, si bien la forma en que ambas
+deben combinarse   y en particular si la segunda debe corregir a la primera antes de la
+clasificación   constituye una decisión de diseño abierta que la validación deberá resolver.
+
+\subsection{Agregación, presentación y persistencia}
+
+El agregador combina las características resueltas en un veredicto con cuatro desenlaces
+posibles: riesgo alto, moderado o bajo cuando la evidencia disponible permite decidir, y
+\emph{evidencia insuficiente} cuando no. Los tres primeros se acompañan del nivel de confianza
+y de la lista de características que los sustentan; el cuarto, de las características que no
+pudieron resolverse. La presentación es deliberadamente explicativa: junto al veredicto se
+muestra qué características se verificaron, cuáles quedaron indeterminadas y qué acredita cada
+una, conforme al requisito de trazabilidad que la literatura de detección de fraude ha ido
+incorporando frente a los clasificadores opacos \cite{ref28}.
+
+La interfaz extiende el botón estándar del navegador. Al hacer clic, el usuario visualiza: (1)
+un indicador de color con el veredicto (rojo para riesgo alto, amarillo para moderado, verde
+para bajo, gris para evidencia insuficiente); (2) la lista de características verificadas con
+su valor individual; (3) las características no resueltas y la razón de la falla; y (4) un
+botón para acceder al registro de la consulta.
+
+Finalmente, cada consulta se registra en una base de datos junto con las características
+extraídas y el veredicto emitido. El registro habilita la trazabilidad de cada advertencia y
+constituye el conjunto de datos con el que los modelos se reentrenarán. La Sección~IV fija los
+términos de retención y anonimización.

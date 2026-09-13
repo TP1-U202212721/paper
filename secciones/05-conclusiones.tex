@@ -1,0 +1,43 @@
+%% Citas verificadas contra el PDF. Sin marcadores [VERIFY] pendientes.
+
+\section{CONCLUSIONES Y TRABAJO FUTURO}
+
+Este trabajo ha presentado el diseño de un sistema que estima el riesgo de estafa en el punto
+de decisión de compra, a partir de características que el comprador ya tiene delante y sin
+acceso privilegiado a la plataforma. La contribución principal es el marco conceptual, no una
+implementación completa: la distinción entre riesgo detectado e información insuficiente, la
+regla de abstención que la operationaliza y el protocolo de validación que separa la
+observabilidad de la eficacia. Tres conclusiones se desprenden del diseño.
+
+La primera es que la evaluación de riesgo puede desplazarse desde el juicio del comprador
+hacia el sistema sin requerir la cooperación de la plataforma: las ocho características de la
+tabla de características se derivan del contenido que el navegador ya recibió, lo que distingue
+la propuesta de la línea dominante en detección de fraude \cite{ref28}.
+
+La segunda es que la regla de abstención explícita no es un detalle de implementación sino
+una condición de diseño. Un instrumento que presentara como seguro aquello que solo desconoce
+trasladaría al comprador un riesgo que no ha evaluado, y penalizaría a comercios legítimos
+que simplemente no publicitan sus garantías.
+
+La tercera es que intervenir sobre la información del comprador tiene fundamento teórico y no
+solo utilidad práctica: la cantidad de reseñas falsas en equilibrio decrece con la fracción de
+consumidores capaces de interpretar correctamente los indicadores de una ficha \cite{ref29}.
+El efecto de la herramienta no se agota en quien la instala.
+
+La limitación principal se ha declarado a lo largo del artículo: la arquitectura no ha sido
+implementada. El único resultado experimental disponible es de naturaleza diagnóstica y apunta
+contra los propios datos: cinco algoritmos clasifican sin error la partición de prueba, lo que
+revela que el conjunto es separable por construcción. Las métricas obtenidas sobre él no
+estiman la calidad de la estimación de riesgo. Lo presentado es un diseño y un protocolo para
+someterlo a prueba, no un sistema evaluado.
+
+El trabajo futuro tiene un orden obligado. El primero es medir qué características resultan
+legibles en fichas reales, con especial atención al reparto entre plataformas grandes y
+vendedores independientes. El segundo es construir un conjunto de datos más sólido, cuyas
+etiquetas provengan de una fuente independiente del vector de entrada; sin él, cualquier
+métrica seguirá midiendo la regla que generó esas etiquetas.
+
+Una línea distinta es la detección del comportamiento fraudulento del vendedor, que exige
+evidencia sobre operaciones consumadas y la colaboración de las plataformas; constituye una
+recomendación para investigaciones posteriores antes que una extensión del sistema aquí
+descrito.

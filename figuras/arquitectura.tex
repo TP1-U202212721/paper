@@ -4,86 +4,101 @@
 %  Figura vectorial en TikZ: se edita como texto y compila con el paper.
 %  Preambulo requerido:
 %    \usepackage{tikz}
-%    \usetikzlibrary{arrows.meta,positioning,fit,backgrounds}
+%    \usetikzlibrary{arrows.meta,positioning,fit,backgrounds,shapes.geometric}
 %  Va dentro de un entorno figure* (ancho de las dos columnas).
 % ===================================================================
 \begin{tikzpicture}[
   font=\footnotesize,
-  banda/.style   = {draw=black!25, rounded corners=2pt},
-  caja/.style    = {draw=black!75, fill=white, rounded corners=1.5pt,
-                    align=center, minimum height=12mm, inner xsep=2pt,
-                    text width=29mm, line width=0.4pt},
-  cliente/.style = {caja, fill=black!3, text width=33mm, minimum height=11mm},
-  compl/.style   = {cliente, densely dashed, fill=white},
-  agg/.style     = {caja, fill=black!8, text width=60mm, minimum height=11mm},
-  etiq/.style    = {font=\scriptsize\bfseries, black!50, anchor=west},
-  fl/.style      = {-{Latex[length=1.7mm]}, line width=0.45pt, black!75},
-  bus/.style     = {line width=0.45pt, black!75},
-  nota/.style    = {font=\scriptsize\itshape, black!60, align=center,
-                    inner sep=1.2pt, fill=white},
+  % Estilos base
+  banda/.style   = {draw=black!40, rounded corners=4pt, line width=0.8pt},
+  caja/.style    = {draw=black!60, fill=white, rounded corners=3pt,
+                    align=center, minimum height=10mm, inner sep=4pt,
+                    line width=0.6pt},
+  cliente/.style = {caja, fill=orange!15, text width=25mm},
+  servicio/.style= {caja, fill=blue!12, text width=28mm},
+  persist/.style = {caja, fill=cyan!10, text width=30mm},
+  api/.style     = {caja, fill=blue!20, text width=35mm, minimum height=14mm},
+  etiq/.style    = {font=\scriptsize\bfseries, black!70},
+  fl/.style      = {-{Latex[length=2.5mm]}, line width=0.7pt, black!70},
+  flInv/.style   = {Latex[length=2.5mm]-, line width=0.7pt, black!70},
+  flBid/.style   = {Latex[length=2.5mm]-Latex[length=2.5mm], line width=0.7pt, black!70},
+  nota/.style    = {font=\tiny\itshape, black!50, align=center, fill=white,
+                    inner sep=2pt, rounded corners=2pt},
 ]
 
-% =============== BANDA 1 · CLIENTE ===============
+% =============== CAPA 1: CLIENTE (arriba) ===============
 \begin{scope}[on background layer]
-  \node[banda, fit={(0,5.15) (15.9,6.85)}] {};
+  \node[banda, fill=gray!5, minimum width=160mm, minimum height=40mm,
+        rounded corners=5pt] at (8,8) {};
 \end{scope}
-\node[etiq] at (0.15,6.62) {CLIENTE};
+\node[etiq] at (8,9.8) {\textbf{Cliente}};
 
-\node[cliente] (mkt)  at (2.2,5.95)
-  {Página del\\marketplace\\[-2pt]\scriptsize abierta por el usuario};
-\node[cliente] (extn) at (7.5,5.95)
-  {\textbf{Extensión de navegador}\\\scriptsize lee el DOM ya renderizado};
-\node[compl] (app)  at (11.4,5.95)
-  {Cliente multiplataforma\\\scriptsize complementario · web · móvil};
+% Nodos del cliente
+\node[cliente, fill=orange!25, text width=28mm, minimum height=15mm] (ficha) at (2.5,8)
+  {\textbf{Ficha de}\\[-1pt]\textbf{Producto}\\[-3pt]
+   \tiny\textbf{DOM}};
 
-\draw[fl] (mkt) -- node[nota, above, yshift=-0.6mm] {sin scraping} (extn);
+\node[cliente, fill=green!15, text width=30mm, minimum height=15mm] (extn) at (8,8)
+  {\textbf{Extensión de}\\[-1pt]\textbf{navegador}};
 
-% =============== BUS DE CARACTERISTICAS ===============
-\draw[bus] (extn.south) -- (7.5,4.85);
-\draw[bus] (app.south)  -- (11.4,4.85);
-\draw[bus] (2.6,4.85) -- (12.9,4.85);
-\node[nota] at (4.35,4.66) {características extraídas};
+\node[cliente, fill=cyan!15, text width=28mm, minimum height=15mm] (app) at (13.5,8)
+  {\textbf{Aplicación}\\[-1pt]\textbf{web}};
 
-% =============== BANDA 2 · BACKEND ===============
+% Flechas cliente
+\draw[fl] (ficha) -- node[nota, above, yshift=1mm] {Envía información} (extn);
+\draw[flBid] (extn) -- node[nota, above, yshift=1mm] {Solicita autenticación} (app);
+
+% =============== BANDA DE CONEXIÓN ===============
+\draw[fl] (extn.south) -- ++(0,-1.2) -| node[nota, above, pos=0.2] {Envía información extraída de la ficha de producto} (8,5.8);
+
+% =============== CAPA 2: MOTOR DE RIESGO (medio) ===============
 \begin{scope}[on background layer]
-  \node[banda, fit={(0,0.85) (15.9,4.55)}] {};
+  \node[banda, fill=gray!5, minimum width=160mm, minimum height=60mm,
+        rounded corners=5pt] at (8,3.5) {};
 \end{scope}
-\node[etiq] at (0.15,4.34) {BACKEND};
+\node[etiq] at (8,6.2) {\textbf{Motor de Riesgo}};
 
-\node[caja] (dom)  at (2.6,3.45)  {Veracidad de dominio\\[-2pt]
-                                   \scriptsize registro · CNAME\\[-3pt]
-                                   \scriptsize namespace · patrones};
-\node[caja] (rep)  at (6.03,3.45) {Reputación\\del vendedor};
-\node[caja] (rf)   at (9.47,3.45) {Clasificador\\de riesgo};
-\node[caja] (bert) at (12.9,3.45) {Detección de\\reseñas falsas};
+% API centralizadora
+\node[api, fill=blue!25, minimum height=16mm] (api) at (8,4.5)
+  {\textbf{API centralizadora de estimación}\\[-1pt]
+   \textbf{del motor de riesgo}};
 
-\foreach \x in {2.6,6.03,9.47,12.9} { \draw[fl] (\x,4.85) -- (\x,4.06); }
+% Servicios del motor de riesgo
+\node[servicio, fill=blue!15, text width=25mm, minimum height=12mm] (dom) at (1.5,2)
+  {\textbf{Analizador de veracidad}\\[-1pt]\textbf{de dominio}};
 
-\node[agg] (ag) at (7.75,1.65)
-  {\textbf{Agregador de características}\\[-2pt]
-   \scriptsize degradación honesta:\\[-3pt]
-   \scriptsize ausencia de evidencia $\neq$ seguridad};
+\node[servicio, fill=blue!15, text width=25mm, minimum height=12mm] (rep) at (5.5,2)
+  {\textbf{Analizador de}\\[-1pt]\textbf{reputación}};
 
-\foreach \n in {dom,rep,rf,bert} { \draw[fl] (\n) -- (ag); }
+\node[servicio, fill=blue!15, text width=28mm, minimum height=12mm] (rf) at (10.5,2)
+  {\textbf{API de estimación del nivel}\\[-1pt]\textbf{de probabilidad de riesgo}};
 
-% =============== BANDA 3 · PERSISTENCIA ===============
+\node[servicio, fill=blue!15, text width=28mm, minimum height=12mm] (bert) at (14.5,2)
+  {\textbf{API de Detección de}\\[-1pt]\textbf{reseñas falsas}};
+
+% Flechas de API a servicios
+\draw[fl] (api.south) -- ++(0,-0.5) -| node[nota, above, pos=0.3] {Solicita análisis de veracidad de dominio} (dom.north);
+\draw[fl] (api.south) -- ++(0,-0.5) -| node[nota, above, pos=0.3] {Solicita análisis de reputación del vendedor} (rep.north);
+\draw[fl] (api.south) -- ++(0,-0.5) -| node[nota, above, pos=0.3] {Solicita análisis del nivel de probabilidad de riesgo} (rf.north);
+\draw[fl] (api.south) -- ++(0,-0.5) -| node[nota, above, pos=0.3] {Solicita porcentaje de reseñas falsas} (bert.north);
+
+% =============== BANDA DE CONEXIÓN A PERSISTENCIA ===============
+\draw[fl] (api.south) -- ++(0,-0.8) -| node[nota, above, pos=0.2] {Almacena información de consultas realizadas} (8,-0.8);
+
+% =============== CAPA 3: PERSISTENCIA (abajo) ===============
 \begin{scope}[on background layer]
-  \node[banda, fit={(0,-1.15) (15.9,0.55)}] {};
+  \node[banda, fill=gray!5, minimum width=160mm, minimum height=35mm,
+        rounded corners=5pt] at (8,-2.5) {};
 \end{scope}
-\node[etiq] at (0.15,0.32) {PERSISTENCIA};
+\node[etiq] at (8,-0.8) {\textbf{Persistencia}};
 
-\node[caja, text width=42mm] (bd)  at (4.0,-0.5)
-  {BD de registros\\[-2pt]\scriptsize consultas · características · veredictos};
-\node[caja, text width=32mm] (mod) at (12.9,-0.5)
-  {Almacén de modelos};
+% Base de datos
+\node[persist, fill=cyan!15, text width=35mm, minimum height=18mm] (bd) at (8,-3)
+  {\textbf{Base de Datos}\\[-3pt]
+   \tiny Consultas · características · veredictos\\[-1pt]
+   \tiny (trazabilidad y reentrenamiento)};
 
-\draw[fl] (ag.south) |- node[nota, above, pos=0.72] {registro} (bd.east);
-\draw[fl] (mod.north) -- node[nota, right, xshift=0.4mm] {modelos} (12.9,2.85);
-
-% =============== VEREDICTO (margen derecho) ===============
-\draw[fl] (ag.east) -- (15.2,1.65) -- (15.2,5.95)
-  node[nota, pos=0.55, rotate=90, above, yshift=-0.4mm]
-  {veredicto + nivel de confianza}
-  -- (app.east);
+% Flecha a base de datos
+\draw[fl] (8,-1.5) -- (bd.north);
 
 \end{tikzpicture}
