@@ -8,7 +8,30 @@ estimación de riesgo, detección de vendedores fraudulentos desde la plataforma
 identificación de reseñas manipuladas, detección de sitios de suplantación y contramedidas
 implementadas por las organizaciones comerciales. Un apartado final identifica la brecha que
 este trabajo aborda. Los avances se concentran en el lado del operador de la plataforma, y
-rara vez llegan al comprador en el momento de la decisión de compra.
+rara vez llegan al comprador en el momento de la decisión de compra. La
+Tabla~\ref{tab:comparativa} resume esa lectura y sitúa la presente propuesta frente a cada
+línea.
+
+\begin{table*}[t]
+\caption{Líneas de trabajo revisadas, situadas frente a la propuesta}
+\label{tab:comparativa}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}p{2.6cm}p{3.1cm}p{2.3cm}p{2.1cm}p{2.4cm}p{3.1cm}@{}}
+\toprule
+\textbf{Línea} & \textbf{Datos que requiere} & \textbf{Dónde se ejecuta} & \textbf{Cuándo actúa} & \textbf{Salida} & \textbf{Límite para el comprador} \\
+\midrule
+Fraude del vendedor \cite{ref10, ref13, ref14, ref28} & Registros transaccionales, huellas de dispositivo, grafos de interacción & Operador de la plataforma & Durante o después de la transacción & Marca sobre cuenta o transacción & No accede a los datos ni al resultado \\
+Autenticidad de reseñas \cite{ref15, ref16, ref17, ref18} & Texto de reseñas y metadatos del corpus & Plataforma o investigador & Tras la publicación de la reseña & Etiqueta por reseña & No produce un juicio sobre el vendedor ante la compra \\
+Suplantación de sitios \cite{ref7, ref25} & Localizador, registro del dominio y resolución & Proveedor de seguridad o institución financiera & Antes de la visita, sobre listas de URL & Etiqueta de \textit{phishing} & Cubre la identidad del sitio, no al vendedor ni sus reseñas \\
+Riesgo crediticio transfronterizo \cite{ref32} & Información financiera de la contraparte y evaluaciones internas & Plataforma & Previo a la operación comercial & Puntaje de riesgo crediticio & Objeto distinto y datos inaccesibles desde el navegador \\
+Contramedidas del comercio \cite{ref30} & Infraestructura del propio comercio & Organización comercial & Permanente & Controles de seguridad & Solo protege frente al comercio que las adopta \\
+\textbf{Este trabajo} & Ficha ya renderizada, más registro y resolución del dominio & Navegador del comprador y servicio propio & Antes del pago & Nivel estimado de riesgo o evidencia insuficiente & Cobertura limitada a lo visible; sin evaluación empírica \\
+\bottomrule
+\end{tabular}
+\end{table*}
 
 \subsection{Inteligencia artificial aplicada a la estimación de riesgo}
 
@@ -19,14 +42,11 @@ amenazas actuales. El contenido generado por usuarios como reseñas, calificacio
 imágenes resulta decisivo en la decisión de compra y, simultáneamente, altamente vulnerable a
 la manipulación y al fraude coordinado.
 
-Un ejemplo cuantificado ilustra tanto el nivel alcanzado como las condiciones que lo
-hacen posible. Un modelo híbrido de red convolucional con máquina de soporte vectorial
-optimizada alcanza una exactitud del 96.23\,\% y un AUC de 0.9118 al clasificar el riesgo
-crediticio de empresas de comercio transfronterizo \cite{ref32}. Sin embargo, el objeto
-estimado no es el nivel de riesgo de estafa que percibe un comprador individual. Los insumos
-que ese desempeño requiere información financiera de la contraparte, condiciones de
-operación y evaluaciones de la plataforma no son accesibles desde el navegador de quien está
-por realizar una compra \cite{ref32}.
+Un ejemplo cuantificado ilustra tanto el nivel alcanzado como las condiciones que lo hacen
+posible: un modelo híbrido de red convolucional con máquina de soporte vectorial optimizada
+alcanza una exactitud del 96.23\,\% al clasificar el riesgo crediticio de empresas de comercio
+transfronterizo, a partir de información financiera de la contraparte y evaluaciones de la
+plataforma que no son accesibles desde el navegador de quien está por comprar \cite{ref32}.
 
 Los algoritmos que sustentan esta línea de investigación son identificables. En la detección
 de reseñas manipuladas predominan los modelos de lenguaje basados en transformadores:
@@ -43,12 +63,11 @@ combina cuatro de ellos con selección de características mediante SHAP y elimi
 representaciones contextuales, mientras que los atributos estructurales de una ficha
 heterogéneos y de baja dimensionalidad se ajustan mejor a los métodos basados en árboles.
 
-Estos enfoques se sitúan invariablemente en la plataforma, en la institución financiera o en
-el operador del servicio, que son quienes disponen de los registros y ejecutan los modelos.
-Incluso en esos entornos admiten limitaciones: los detectores más avanzados pueden ser eludidos
-mediante perturbaciones adversariales u ofuscación lingüística \cite{ref31}. La
-defensa centralizada, por sólida que sea, deja pasar casos que alcanzan al comprador sin que
-este disponga de instrumento alguno de protección.
+Estos enfoques se sitúan invariablemente en la plataforma o en el operador del servicio, que
+son quienes disponen de los registros y ejecutan los modelos, y aun ahí admiten limitaciones:
+los detectores más avanzados pueden ser eludidos mediante perturbaciones adversariales u
+ofuscación lingüística \cite{ref31}. La defensa centralizada, por sólida que sea, deja pasar
+casos que alcanzan al comprador sin que este disponga de instrumento alguno.
 
 \subsection{Detección de fraude desde la plataforma}
 
@@ -99,9 +118,14 @@ un vendedor que no las ha adoptado.
 El comprador ocupa una posición singular: existen métodos eficaces contra vendedores
 fraudulentos, reseñas manipuladas y suplantación de sitios, pero todos requieren datos,
 infraestructura o autoridad de los que él carece. Las recomendaciones dirigidas a él son de
-naturaleza educativa y de eficacia limitada \cite{ref27, ref3}. Ninguno de los trabajos
-revisados combina características de dominio, de vendedor y de reseñas en un instrumento que
-se ejecute del lado del comprador y emita su advertencia antes del pago. Esa es la brecha que
-este trabajo aborda. Las características propuestas son trasladables a cualquier plataforma de
-comercio electrónico que exponga fichas de producto con información pública: MercadoLibre,
-Amazon, eBay o AliExpress, entre otras.
+naturaleza educativa y de eficacia limitada \cite{ref27, ref3}. En los trabajos revisados no
+se identificó ninguno que combine características de dominio, de vendedor y de reseñas en un
+instrumento que se ejecute del lado del comprador y emita su advertencia antes del pago. Esta
+revisión es selectiva y no sigue un protocolo sistemático, de modo que la afirmación se limita
+a lo revisado: establecer la ausencia de tales trabajos en la literatura exigiría una búsqueda
+sistemática, que queda como trabajo pendiente. Esa es la brecha que este trabajo aborda. Las
+características propuestas se apoyan en elementos presentes en cualquier ficha de producto con
+información pública, por lo que su traslado a plataformas como MercadoLibre, Amazon, eBay o
+AliExpress constituye una \emph{hipótesis de transferibilidad}: su observabilidad real en cada
+una debe medirse antes de darla por válida, y esa medición es el objeto de la Fase~1 del
+protocolo de la Sección~IV.

@@ -3,75 +3,72 @@
 \section{VALIDACIÓN}
 
 Esta sección describe el protocolo con el que se someterá a prueba la arquitectura completa.
-El sistema se considera exitoso si cumple tres condiciones: (1) la extensión resuelve al
-menos el 70\,\% de las características en fichas de plataformas grandes y al menos el 40\,\%
-en vendedores independientes; (2) la tasa de falsos positivos no supera el 15\,\%, para
-evitar que la herramienta pierda credibilidad o imponga costos injustificados sobre comercios
-honestos; y (3) al menos el 60\,\% de los participantes reporta que la advertencia influyó en
-su decisión de compra. Estos umbrales se fijan en función de la literatura sobre aceptación
-de sistemas de recomendación \cite{ref23}. Se revisarán tras la Fase~1.
+Como meta piloto inicial se fija que la extensión resuelva al menos el 70\,\% de las
+características en fichas de plataformas grandes y al menos el 40\,\% en vendedores
+independientes. Son valores de referencia para orientar la primera medición, no umbrales de
+éxito acreditados por evidencia previa, y se revisarán con los datos que arroje la Fase~1. No
+se fijan aquí metas sobre la proporción de advertencias infundadas ni sobre el efecto en la
+decisión de compra: ambas exigen una referencia externa sobre la legitimidad de cada ficha de
+la que este protocolo todavía no dispone.
 
 \subsection{Verificación preliminar del vector de características}
 
-Para verificar que el vector de ocho características de la tabla de características contiene
+Para verificar que el vector de ocho características de la Tabla~\ref{tab:senales} contiene
 información discriminante, se construyó un conjunto sintético de 10\,000 registros con tres
 clases equilibradas. El conjunto se construyó ante la ausencia de un conjunto etiquetado
 público de fichas de vendedores peruanos: sus variables y rangos se derivaron de los factores
 de riesgo identificados en la Sección~II, y las etiquetas se asignaron mediante reglas
 deterministas sobre esas mismas variables. Declarar esta procedencia es indispensable para
 interpretar lo que sigue. Sus siete entradas corresponden a siete de las ocho de la
-tabla de características. La veracidad de dominio, que este trabajo introduce, es la única que
+Tabla~\ref{tab:senales}. La veracidad de dominio, que este trabajo introduce, es la única que
 no forma parte de ese vector. Se entrenaron cinco algoritmos de familias distintas sobre la
 misma partición 80/20 con semilla fija, y se validaron además mediante validación cruzada
 estratificada de cinco pliegues sobre el conjunto completo. Los resultados muestran que los
 cinco algoritmos clasifican correctamente los 2\,000 registros de prueba, sin desviación
 entre pliegues.
 
-Los experimentos se ejecutaron en un entorno estandarizado para garantizar su
-reproducibilidad: Ubuntu 24.04.3 LTS, Python 3.11, scikit-learn, NumPy y pandas. El hardware
-consistió en un servidor con procesador Intel Xeon E3-1240 v5 (4 núcleos, 8 hilos, 3.90\,GHz),
-ejecutados íntegramente en CPU. Las máquinas de soporte vectorial y el clasificador de vecinos
-más cercanos se encadenaron a un normalizador de media cero y varianza unitaria. Los demás
-hiperparámetros se mantuvieron en sus valores por defecto, con semilla fija en todos los
-casos: el objetivo no era optimizar el desempeño sino comprobar si existía diferencia alguna
+Los experimentos se ejecutaron sobre Ubuntu 24.04.3 LTS con Python 3.11 y scikit-learn, en un
+procesador Intel Xeon E3-1240 v5 y sin aceleración gráfica. Las máquinas de soporte vectorial y
+el clasificador de vecinos más cercanos se encadenaron a un normalizador de media cero y
+varianza unitaria; los demás hiperparámetros se mantuvieron por defecto, con semilla fija,
+porque el objetivo no era optimizar el desempeño sino comprobar si existía diferencia alguna
 entre familias de algoritmos.
 
-Los cinco algoritmos clasifican correctamente los 2\,000 registros de prueba, sin desviación
-entre pliegues. El resultado no debe leerse como evidencia de la calidad de ninguno de ellos.
-Que un clasificador de vecinos más cercanos iguale a un ensamble de gradiente potenciado, y
-que ambos igualen a un árbol individual, indica que la frontera de decisión es recuperable por
-cualquier método. El problema es separable por construcción. Un árbol de decisión de
-profundidad cinco reproduce la regla de etiquetado en su totalidad, y la importancia de las
-características se concentra en dos: la puntuación del producto, con 0.51, y el volumen de
-ventas, con 0.46. Mientras tanto, tres de las siete no contribuyen en absoluto.
+Los cinco algoritmos recuperan la regla generadora: que un clasificador de vecinos más
+cercanos iguale a un ensamble de gradiente potenciado, y que ambos igualen a un árbol
+individual, indica que la frontera de decisión es recuperable por cualquier método, de modo
+que el problema es separable por construcción. Un árbol de decisión de profundidad cinco
+reproduce la regla de etiquetado en su totalidad, y la importancia de las características se
+concentra en dos: la puntuación del producto, con 0.51, y el volumen de ventas, con 0.46,
+mientras que tres de las siete no contribuyen en absoluto.
 
-De ello se siguen dos consecuencias. La primera es que este conjunto \textbf{no permite
-discriminar entre algoritmos}: la elección del bosque aleatorio descrita en la Sección~III se
-sostiene en sus propiedades de interpretabilidad y costo, no en una comparación empírica que
-estos datos no pueden arbitrar. La segunda, más relevante, es que las métricas obtenidas sobre
-él no estiman la calidad del nivel de riesgo asignado, sino la fidelidad con que un modelo
-recupera la regla que generó sus propias etiquetas. La verificación confirma que el vector de
-características contiene información discriminante, pero la validez del enfoque depende de que
-las características sean legibles en fichas reales. Depende también de que las etiquetas
-provengan de una fuente independiente, como se describe en el protocolo de la siguiente
-subsección. Esta verificación preliminar es, por tanto, un prerequisito para cualquier
-evaluación posterior, no una métrica de calidad del sistema.
+El ejercicio vale como \textbf{verificación del canal de procesamiento y diagnóstico del
+conjunto}, no como medida de eficacia. De ello se siguen dos consecuencias. La primera es que
+estos datos \textbf{no permiten discriminar entre algoritmos}: la elección del bosque
+aleatorio descrita en la Sección~III responde a requisitos de interpretabilidad y costo, no a
+una comparación empírica que este conjunto no puede arbitrar. La segunda, más relevante, es
+que las métricas obtenidas sobre él no estiman la calidad del nivel estimado de riesgo, sino
+la fidelidad con que un modelo recupera la regla que generó sus propias etiquetas. La validez
+del enfoque depende de que las características sean legibles en fichas reales y de que las
+etiquetas provengan de una fuente independiente del vector de entrada, según describe el
+protocolo de la siguiente subsección.
 
 
 \subsection{Diseño experimental de la validación}
 
 La validación se ejecutará en el Perú, sobre las plataformas y los hábitos descritos en la
-Sección~IV. Esa elección delimita el alcance de las conclusiones empíricas, no el de la
-arquitectura: las características de la tabla de características se derivan de elementos
-presentes en cualquier ficha de producto y no de particularidades del mercado peruano. La
-propuesta es trasladable a otros contextos, con la salvedad de que la cobertura efectiva de
-cada característica debe volver a medirse en cada mercado.
+Sección~I. Esa elección delimita el alcance de las conclusiones empíricas, no el de la
+arquitectura: las características de la Tabla~\ref{tab:senales} se derivan de elementos
+presentes en cualquier ficha de producto y no de particularidades del mercado peruano. De ahí
+se sigue una hipótesis de transferibilidad, no una propiedad demostrada: que la propuesta
+opere en otros mercados depende de que esas características resulten observables en ellos, lo
+que exige medir su cobertura en cada caso.
 
 La validación se organiza en dos fases con objetivos separables.
 
 \emph{Fase 1: observabilidad de las características.} Antes de evaluar la utilidad del
 veredicto es necesario establecer qué fracción de las características de la
-tabla de características resulta efectivamente legible en fichas reales. Sobre una muestra de
+Tabla~\ref{tab:senales} resulta efectivamente legible en fichas reales. Sobre una muestra de
 fichas de producto de las plataformas de mayor uso en el Perú se registrará, para cada
 característica, si pudo resolverse o si quedó indeterminada, distinguiendo entre plataformas
 grandes y vendedores independientes. El desenlace relevante no es un porcentaje agregado sino
@@ -79,23 +76,43 @@ su distribución: una arquitectura que solo resolviera características en las p
 ofrecen garantías carecería de utilidad precisamente en el segmento donde el riesgo se
 concentra.
 
-\emph{Fase 2: eficacia con usuarios.} Un diseño con dos grupos con y sin la extensión
-activa enfrentará a los participantes a un conjunto de fichas preparadas que incluya casos
-legítimos y casos con indicadores de fraude. La población objetivo son compradores digitales
-peruanos de entre 18 y 60 años, con una muestra prevista de cincuenta participantes que
-otorgarán su consentimiento de forma voluntaria antes de comenzar. Las sesiones se conducirán
-de manera presencial o en línea, según la disponibilidad de cada participante. Los registros
-de consulta descritos en la Sección~III se recogerán disociados del participante que los
-originó, se conservarán únicamente durante el periodo de análisis y se eliminarán al cierre
-del estudio; ningún dato que permita reconstruir el historial de compra de una persona
-identificada forma parte de lo que el protocolo almacena.
+\emph{Fase 2: comportamiento de compra con la herramienta.} Un diseño con dos grupos, con y
+sin la extensión activa, enfrentará a los participantes al mismo conjunto de fichas reales. La
+asignación al grupo será aleatoria y el orden de presentación de las fichas se
+contrabalanceará entre participantes, para que el aprendizaje sobre la tarea no se confunda
+con el efecto de la herramienta. La población objetivo son compradores digitales peruanos de
+entre 18 y 60 años. La muestra prevista de cincuenta participantes es una muestra piloto,
+dimensionada por factibilidad: permite estimar la variabilidad de las medidas y detectar
+problemas del protocolo, no alcanzar potencia estadística, que deberá calcularse a partir de
+esa variabilidad antes del estudio definitivo. Todos otorgarán su consentimiento de forma
+voluntaria antes de comenzar, y las sesiones se conducirán de manera presencial o en línea,
+según su disponibilidad. Los registros de consulta descritos en la Sección~III se recogerán
+disociados del participante que los originó, se conservarán únicamente durante el periodo de
+análisis y se eliminarán al cierre del estudio; ningún dato que permita reconstruir el
+historial de compra de una persona identificada forma parte de lo que el protocolo almacena.
 
-Del comportamiento observado durante la sesión se medirá la tasa de identificación correcta,
-la tasa de falsos positivos sobre comercios legítimos y el tiempo hasta la decisión. La
-percepción del participante se recoge mediante un cuestionario estructurado de quince ítems
-con respuesta en escala de Likert de cinco puntos, organizado en cinco dimensiones \cite{ref23}.
-La eficacia se juzga por las tres primeras medidas de comportamiento, y la aceptación, por las
-dos últimas dimensiones del cuestionario.
+Las medidas de esta fase se eligieron bajo una restricción que conviene declarar: el diseño no
+dispone de una verdad de referencia sobre cada ficha. Establecer si un vendedor es fraudulento
+exige evidencia sobre operaciones consumadas denuncias verificadas, retiros de la plataforma
+que la ficha no contiene y que este protocolo no produce. Por eso no se miden aquí la tasa de
+identificación correcta ni la tasa de falsos positivos sobre comercios legítimos: ambas
+presuponen esa referencia, y construirla es un requisito previo del estudio de eficacia, no un
+subproducto de este.
+
+Se medirá, en cambio, lo que el diseño sí puede observar. Del comportamiento: la decisión de
+compra sobre cada ficha en uno y otro grupo, la proporción de decisiones que el participante
+revierte tras leer el veredicto y el tiempo hasta decidir. Del sistema: la cobertura de
+características alcanzada en cada ficha y la proporción de fichas en que la regla se abstiene,
+magnitud que gobierna la utilidad del instrumento, pues una herramienta que se abstiene casi
+siempre no llega a informar decisión alguna. La percepción del participante se recoge mediante
+un cuestionario estructurado de quince ítems con respuesta en escala de Likert de cinco
+puntos, organizado en las cinco dimensiones de la Tabla~\ref{tab:instrumento}. Solo el bloque
+de usabilidad emplea un instrumento validado, la Escala de Usabilidad del Sistema
+\cite{ref23}; las cuatro dimensiones restantes constituyen un instrumento propio, sujeto a
+validación en el propio estudio piloto, del que se reportará la consistencia interna antes de
+interpretar sus resultados. La dimensión de influencia en la decisión es autorreportada y no
+se emplea como indicador de eficacia: que una advertencia influya no implica que la decisión
+resultante sea mejor, y establecerlo exige la referencia externa que esta fase no tiene.
 
 \begin{table}[t]
 \caption{Dimensiones del instrumento de validación con usuarios}
@@ -117,10 +134,12 @@ Influencia en la decisión & Si la advertencia modificó lo que habría hecho si
 \end{tabular}
 \end{table}
 
-La tasa de falsos positivos es la métrica que gobierna el diseño. Un instrumento que advierte
-con excesiva frecuencia pierde credibilidad; su costo recae sobre comercios honestos. Por ello
-la regla de abstención de la Sección~III distingue el veredicto de riesgo del de evidencia
-insuficiente: son errores distintos y deben medirse por separado.
+La asimetría de costos que motiva la regla de abstención de la Sección~III se mantiene como
+principio de diseño y no como resultado medible en esta fase. Un instrumento que advierte con
+excesiva frecuencia pierde credibilidad y su costo recae sobre comercios honestos; cuantificar
+ese costo exige la verdad de referencia que el estudio de eficacia deberá construir. Por eso
+el veredicto de riesgo y el de evidencia insuficiente se mantienen separados: son resultados
+distintos y su evaluación no puede confundirse.
 
 \subsection{Amenazas a la validez}
 
@@ -136,18 +155,22 @@ tratarse como una medición única.
 La segunda afecta al clasificador de riesgo. Sus etiquetas de entrenamiento se derivan
 mediante reglas deterministas aplicadas a las mismas características que el modelo recibe como
 entrada, de modo que el desempeño medido sobre ese conjunto refleja la recuperación de esa
-regla y no el comportamiento frente a vendedores fraudulentos reales. Su evaluación exige, por
-tanto, un conjunto de datos con etiquetas de origen independiente del vector de
-características.
+regla y no el comportamiento frente a vendedores fraudulentos reales. La mitigación es previa
+a cualquier medición de eficacia y condiciona el orden del trabajo futuro: construir un
+conjunto cuyas etiquetas provengan de una fuente independiente del vector de características,
+y hasta entonces no reportar métricas de desempeño del clasificador.
 
-La tercera es de validez ecológica. Un experimento con fichas preparadas mide la capacidad de
-detección en condiciones de atención deliberada, mientras que la evidencia disponible sugiere
-que la victimización ocurre justamente cuando esa atención falla \cite{ref27}. El diseño
-puede establecer si la herramienta ayuda a quien la mira, no si protege a quien compra
-distraído.
+La tercera es de validez ecológica. Un experimento en sesión mide la capacidad de decisión en
+condiciones de atención deliberada, mientras que la evidencia disponible sugiere que la
+victimización ocurre justamente cuando esa atención falla \cite{ref27}. El diseño puede
+establecer si la herramienta ayuda a quien la mira, no si protege a quien compra distraído.
+Mitigarlo exige una segunda medición en uso real, con la extensión instalada durante semanas y
+sobre las compras que el participante hubiera hecho de todos modos, que este protocolo no
+cubre.
 
 La cuarta es la más general: la arquitectura supone que el atacante no adapta su
 comportamiento a las características observadas, suposición insostenible a mediano plazo
 porque los defraudadores ajustan sus estrategias frente a los mecanismos de detección
-\cite{ref28}. El registro de consultas descrito en la Sección~III existe para
-hacer observable esa deriva.
+\cite{ref28}. Como mitigación parcial, el registro de consultas descrito en la Sección~III
+hace observable esa deriva y permite reentrenar cuando la distribución de las características
+cambie; ninguna medición puntual, en cambio, conserva su validez indefinidamente.

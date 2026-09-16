@@ -3,8 +3,7 @@
 \@nameuse{bbl@beforestart}
 \catcode `"\active 
 \citation{ref26}
-\citation{ref21}
-\citation{ref6}
+\citation{ref21,ref6}
 \citation{ref27}
 \citation{ref3}
 \citation{ref25}
@@ -13,8 +12,12 @@
 \citation{ref30}
 \babel@aux{spanish}{}
 \@writefile{toc}{\contentsline {section}{\numberline {I}INTRODUCCIÓN}{1}{}\protected@file@percent }
-\citation{ref31}
+\citation{ref10,ref13,ref14,ref28}
+\citation{ref15,ref16,ref17,ref18}
+\citation{ref7,ref25}
 \citation{ref32}
+\citation{ref30}
+\citation{ref31}
 \citation{ref32}
 \citation{ref16}
 \citation{ref17}
@@ -22,11 +25,11 @@
 \citation{ref16}
 \citation{ref10,ref13,ref14}
 \citation{ref25}
+\@writefile{toc}{\contentsline {section}{\numberline {II}TRABAJO RELACIONADO}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1}Inteligencia artificial aplicada a la estimación de riesgo}{2}{}\protected@file@percent }
 \citation{ref31}
 \citation{ref10}
 \citation{ref28}
-\@writefile{toc}{\contentsline {section}{\numberline {II}TRABAJO RELACIONADO}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {1}Inteligencia artificial aplicada a la estimación de riesgo}{2}{}\protected@file@percent }
 \citation{ref15}
 \citation{ref29}
 \citation{ref7}
@@ -34,77 +37,71 @@
 \citation{ref25}
 \citation{ref30}
 \citation{ref27,ref3}
-\citation{ref28}
-\citation{ref24}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Líneas de trabajo revisadas, situadas frente a la propuesta}}{3}{}\protected@file@percent }
+\newlabel{tab:comparativa}{{I}{3}{}{table.1}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2}Detección de fraude desde la plataforma}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3}Reseñas manipuladas}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4}Suplantación de sitios y análisis de dominio}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5}Contramedidas del lado del comercio}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {6}Brecha de investigación}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {III}MÉTODO}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {1}Características extraíbles del lado del cliente}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2}Lectura del DOM y recolección automatizada}{3}{}\protected@file@percent }
+\citation{ref28}
+\citation{ref24}
 \citation{ref24}
 \citation{ref30}
-\citation{ref27,ref3}
-\citation{ref24}
+\@writefile{toc}{\contentsline {section}{\numberline {III}MÉTODO}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1}Características extraíbles del lado del cliente}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2}Lectura del DOM y recolección automatizada}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3}Protección de pago declarada}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4}Capa cliente: observación sin recolección automatizada}{4}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Conjunto de características, origen y comportamiento ante evidencia ausente}}{4}{}\protected@file@percent }
-\newlabel{tab:senales}{{I}{4}{}{table.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5}Conjunto de características y regla de abstención ante evidencia ausente}{4}{}\protected@file@percent }
+\citation{ref27,ref3}
+\citation{ref24}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5}Conjunto de características y regla de abstención ante evidencia ausente}{5}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Conjunto de características, origen y comportamiento ante evidencia ausente}}{5}{}\protected@file@percent }
+\newlabel{tab:senales}{{II}{5}{}{table.2}{}}
 \citation{ref25}
 \citation{ref7}
 \citation{ref30}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6}Descomposición en servicios}{5}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Componentes de la arquitectura y sus funciones principales}}{5}{}\protected@file@percent }
-\newlabel{tab:componentes}{{II}{5}{}{table.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7}Analizador de veracidad de dominio}{5}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Arquitectura lógica propuesta. La capa cliente (extensión de navegador) extrae características del DOM renderizado y las envía a la API centralizadora del motor de riesgo. El motor de riesgo se descompone en cuatro servicios: un analizador de veracidad de dominio, un analizador de reputación, una API de estimación de riesgo y una API de detección de reseñas falsas. La API centralizadora agrega los resultados y almacena las consultas en la capa de persistencia para trazabilidad y reentrenamiento.}}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6}Descomposición en servicios}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7}Analizador de veracidad de dominio}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Arquitectura lógica propuesta. La capa cliente recolecta del DOM renderizado los datos de las características y los envía a la API centralizadora del motor de riesgo, que se descompone en cuatro servicios: analizador de veracidad de dominio, analizador de reputación, API de estimación de riesgo y API de detección de reseñas falsas. La API centralizadora agrega los resultados y almacena las consultas en la capa de persistencia.}}{6}{}\protected@file@percent }
 \newlabel{fig:arquitectura}{{1}{6}{}{figure.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8}Modelos de inferencia sobre vendedor y reseñas}{6}{}\protected@file@percent }
 \citation{ref29}
 \citation{ref28}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8}Modelos de inferencia sobre vendedor y reseñas}{7}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Configuración del clasificador de riesgo del vendedor}}{7}{}\protected@file@percent }
-\newlabel{tab:rf}{{III}{7}{}{table.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {9}Agregación, presentación y persistencia}{7}{}\protected@file@percent }
-\citation{ref23}
-\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Configuración del clasificador de reseñas fraudulentas}}{8}{}\protected@file@percent }
-\newlabel{tab:modelo}{{IV}{8}{}{table.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {IV}VALIDACIÓN}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}VALIDACIÓN}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1}Verificación preliminar del vector de características}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2}Diseño experimental de la validación}{8}{}\protected@file@percent }
 \citation{ref23}
 \citation{ref24}
 \citation{ref27}
 \citation{ref28}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2}Diseño experimental de la validación}{9}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Dimensiones del instrumento de validación con usuarios}}{9}{}\protected@file@percent }
-\newlabel{tab:instrumento}{{V}{9}{}{table.5}{}}
+\citation{ref28}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Dimensiones del instrumento de validación con usuarios}}{9}{}\protected@file@percent }
+\newlabel{tab:instrumento}{{III}{9}{}{table.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3}Amenazas a la validez}{9}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {V}CONCLUSIONES Y TRABAJO FUTURO}{9}{}\protected@file@percent }
-\citation{ref28}
 \citation{ref29}
-\bibcite{ref27}{1}
-\bibcite{ref3}{2}
-\bibcite{ref25}{3}
-\bibcite{ref29}{4}
-\bibcite{ref28}{5}
-\bibcite{ref30}{6}
-\bibcite{ref31}{7}
-\bibcite{ref32}{8}
-\bibcite{ref16}{9}
-\bibcite{ref17}{10}
-\bibcite{ref18}{11}
-\bibcite{ref10}{12}
-\bibcite{ref13}{13}
-\bibcite{ref14}{14}
-\bibcite{ref19}{15}
-\bibcite{ref15}{16}
+\bibcite{ref26}{1}
+\bibcite{ref21}{2}
+\bibcite{ref6}{3}
+\bibcite{ref27}{4}
+\bibcite{ref3}{5}
+\bibcite{ref25}{6}
+\bibcite{ref29}{7}
+\bibcite{ref28}{8}
+\bibcite{ref30}{9}
+\bibcite{ref10}{10}
+\bibcite{ref13}{11}
+\bibcite{ref14}{12}
+\bibcite{ref15}{13}
+\bibcite{ref16}{14}
+\bibcite{ref17}{15}
+\bibcite{ref18}{16}
 \bibcite{ref7}{17}
-\bibcite{ref26}{18}
-\bibcite{ref21}{19}
-\bibcite{ref6}{20}
-\bibcite{ref24}{21}
-\bibcite{ref23}{22}
+\bibcite{ref32}{18}
+\bibcite{ref31}{19}
+\bibcite{ref24}{20}
+\bibcite{ref23}{21}
 \@writefile{toc}{\contentsline {section}{REFERENCIAS}{10}{}\protected@file@percent }
 \gdef \@abspage@last{10}

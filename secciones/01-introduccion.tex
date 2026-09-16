@@ -5,20 +5,16 @@
 El comercio electrónico peruano opera en un entorno donde la adopción del pago digital no está
 acompañada por un nivel equivalente de confianza del consumidor. Un análisis comparado de
 sistemas de pago en economías emergentes reporta que la falta de confianza en las
-instituciones constituye una barrera clave \cite{ref26}. Solo el 57\,\% de los adultos
-utiliza pagos digitales, frente al 64\,\% a nivel global. Esta desconfianza
-genera un impacto directo en el mercado legítimo, ya que la intención y continuidad de compra
-en canales digitales dependen fuertemente del riesgo percibido por el usuario \cite{ref21}
-\cite{ref6}. La incapacidad de verificar a un vendedor desconocido antes del pago no solo
-afecta a las víctimas de fraude, sino que impone una fricción comercial sobre los vendedores
-honestos.
+instituciones constituye una barrera clave y que solo el 57\,\% de los adultos utiliza pagos
+digitales, frente al 64\,\% a nivel global \cite{ref26}. Esa desconfianza afecta también al
+mercado legítimo, porque la intención y la continuidad de compra dependen del riesgo percibido
+\cite{ref21, ref6}: la incapacidad de verificar a un vendedor desconocido antes del pago
+impone una fricción comercial sobre los vendedores honestos.
 
-La prevención de estafas en compras digitales depende en gran medida de la capacidad del
-comprador para evaluar la fiabilidad del vendedor antes de completar una transacción. Los
-marcos de protección actuales se sustentan en heurísticas de uso extendido: verificación de
-la reputación del vendedor, desconfianza hacia precios inverosímiles y comprobación de la
-dirección del sitio web. El supuesto subyacente es que un comprador informado dispone de los
-instrumentos necesarios para protegerse.
+La prevención de estafas depende hoy de la capacidad del comprador para evaluar esa
+fiabilidad, y se sustenta en heurísticas de uso extendido: revisar la reputación del vendedor,
+desconfiar de precios inverosímiles y comprobar la dirección del sitio. El supuesto subyacente
+es que un comprador informado dispone de los instrumentos necesarios para protegerse.
 
 La evidencia empírica no respalda ese supuesto. Un estudio con una muestra de 820 adultos,
 replicado sobre una segunda cohorte de 629, demostró que la autoconciencia sobre privacidad
@@ -45,9 +41,11 @@ ficha en una plataforma o interactúa con un vendedor que no las ha adoptado.
 El presente trabajo propone desplazar la evaluación de riesgo desde el juicio subjetivo del
 comprador hacia un sistema de estimación automática que se ejecute en su navegador, sobre la
 información que ya tiene disponible y antes de que se efectúe el pago. La pregunta central que
-se aborda es si un conjunto de características extraíbles del lado del cliente sin acceso
-privilegiado a la plataforma y sin recolección automatizada de datos resulta suficiente
-para generar una advertencia útil en el punto de decisión.
+se aborda, y que este trabajo deja planteada para su evaluación empírica posterior, es si un
+conjunto de características extraíbles del lado del cliente sin acceso privilegiado a la
+plataforma y sin recolección automatizada de datos resulta suficiente para generar una
+advertencia útil en el punto de decisión. Esa suficiencia es aquí una hipótesis de diseño, no
+un resultado.
 
 Una advertencia se considera útil si cumple tres condiciones: (1) se genera antes de que el
 pago se efectúe, (2) se basa en al menos cuatro características verificables, y (3)
@@ -55,30 +53,42 @@ distingue explícitamente entre riesgo detectado e información insuficiente. Es
 condición es crítica: un sistema que presentara como seguro aquello que solo desconoce
 trasladaría al comprador un riesgo que no ha evaluado.
 
-El alcance de este sistema se delimita a la estimación probabilística del nivel de riesgo de
-un vendedor mediante una escala ordinal, excluyendo la emisión de un dictamen categórico de
-fraude. Esta distinción tiene dos implicaciones operativas. Por un lado, admite declaraciones
-explícitas de insuficiencia de evidencia en lugar de forzar decisiones binarias. Por otro,
-el sistema se evalúa en función de la mitigación de riesgo y la reducción de advertencias
-infundadas, en lugar de utilizar métricas de clasificación estándar contra una verdad de
-referencia inexistente en la ficha de producto.
+Conviene fijar aquí la terminología que el artículo emplea. El sistema calcula un \emph{nivel
+estimado de riesgo}: una escala ordinal alto, moderado o bajo que no constituye una
+probabilidad calibrada, pues nada en el diseño garantiza que sus niveles correspondan a
+frecuencias observadas de fraude. Ese nivel, junto con la declaración de evidencia
+insuficiente cuando corresponde, conforma el \emph{veredicto} que la extensión muestra al
+comprador. El sistema no emite un dictamen categórico de fraude. Esta distinción tiene dos
+implicaciones operativas. Por un lado, admite declaraciones explícitas de insuficiencia de
+evidencia en lugar de forzar decisiones binarias. Por otro, el sistema se evalúa en función
+del cambio que induce en la decisión de compra y del costo de las advertencias infundadas, en
+lugar de utilizar métricas de clasificación estándar contra una verdad de referencia
+inexistente en la ficha de producto.
 
 Las contribuciones de este trabajo son tres. En primer lugar, un conjunto de ocho
 características de riesgo extraíbles desde el cliente. Estas características vienen acompañadas
 de una regla explícita que distingue el riesgo detectado de la evidencia insuficiente,
-garantizando que la ausencia de información nunca se presente como seguridad. Esta distinción
-constituye una contribución conceptual al campo: los sistemas de detección de fraude existentes
-operan sobre datos completos y no abordan el problema de la información parcial que enfrenta
-el comprador. En segundo lugar, una arquitectura de tres capas cuyo componente principal es una
+garantizando que la ausencia de información nunca se presente como seguridad. Se presenta como
+un mecanismo de diseño: está emparentado con los esquemas de abstención u opción de rechazo
+conocidos en clasificación, y lo que aquí se propone es su aplicación a la evaluación de
+riesgo del lado del comprador, donde los sistemas de detección de fraude existentes operan
+sobre datos completos y no abordan el problema de la información parcial. Establecer en qué
+medida ello constituye una novedad frente a esos esquemas exige la comparación sistemática que
+% [VERIFY] al cerrar la comparación, citar fuentes de reject option / selective
+% classification obtenidas del grupo Mendeley "Taller de Proyecto 2".
+este trabajo aún no realiza. En segundo lugar, una arquitectura de tres capas cuyo componente principal es una
 extensión de navegador. Se presentan los diseños de los módulos clave y se entrenaron
 prototipos de los clasificadores de vendedor y reseñas. En tercer lugar, un protocolo de
 validación en dos fases que separa la observabilidad de las características de la eficacia del
 veredicto, identificando las amenazas a la validez que condicionan las conclusiones.
 
-Cabe precisar que la extensión de navegador y el analizador de dominio no han sido
-implementados; los clasificadores han sido entrenados sobre datos sintéticos cuyas
-limitaciones se analizan en la Sección~IV. El presente trabajo es, por tanto, una propuesta
-arquitectónica con componentes parcialmente validados, no un sistema completo evaluado.
+Cabe precisar qué es exactamente lo que se presenta. Este artículo aporta tres cosas de
+naturaleza distinta: una propuesta arquitectónica, una validación diagnóstica preliminar sobre
+el único conjunto de datos disponible y un protocolo experimental para la etapa siguiente. La
+extensión de navegador y el analizador de dominio no han sido implementados; los clasificadores
+son prototipos preliminares entrenados sobre datos sintéticos cuyas limitaciones se analizan en
+la Sección~IV. Nada de lo que sigue debe leerse como evidencia de que la propuesta mitigue la
+probabilidad de riesgo a la que se expone un comprador real.
 
 El resto del artículo se organiza de la siguiente manera. La Sección~II revisa el trabajo
 relacionado; la Sección~III detalla la arquitectura propuesta; la Sección~IV describe el
