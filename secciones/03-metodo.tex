@@ -1,6 +1,6 @@
 %% Citas verificadas contra el PDF; no hay marcadores [VERIFY] pendientes.
 
-\section{MÉTODO}
+\section{METODOLOGÍA}
 
 Esta sección llama \emph{extensión} a la aplicación de navegador que recolecta del DOM los
 datos con los que se resuelven las características, \emph{motor de riesgo} al conjunto de
@@ -13,7 +13,9 @@ plataforma, sino que opera sobre la misma información que el comprador ya tiene
 restricción gobierna todas las decisiones de diseño que siguen. Separa esta propuesta de los
 sistemas de detección desplegados por el operador del comercio \cite{ref28}.
 
-\subsection{Características extraíbles del lado del cliente}
+\subsection{Contexto}
+
+\subsubsection{Características extraíbles del lado del cliente}
 
 Para los efectos de esta arquitectura, se define como \emph{característica extraíble del lado
 del cliente} a todo atributo de una publicación que cumpla tres condiciones simultáneas: ser
@@ -38,7 +40,7 @@ estimada de reseñas no auténticas. Las tres se apoyan en lo que el comprador t
 ninguna exige telemetría interna de la plataforma; lo que cambia es dónde se computan, según
 precisa la Tabla~\ref{tab:senales}.
 
-\subsection{Lectura del DOM y recolección automatizada}
+\subsubsection{Lectura del DOM y recolección automatizada}
 
 La operación que realiza la extensión requiere una caracterización precisa. Una revisión
 sistemática define el \textit{web scraping} y el \textit{web crawling} como el proceso
@@ -54,7 +56,7 @@ legales \cite{ref24}: lo primero se declara como amenaza a la validez más adela
 segundo es la razón para no retransmitir contenido de la plataforma más allá de las
 características que el veredicto requiere.
 
-\subsection{Protección de pago declarada}
+\subsubsection{Protección de pago declarada}
 
 Las plataformas de comercio de mayor tamaño publican esquemas mediante los cuales retienen el
 pago hasta la conformidad del comprador o garantizan su devolución ante incumplimiento. Esa
@@ -71,7 +73,9 @@ separación desacopla la observación del DOM, que ocurre en el navegador, del a
 riesgo, que requiere servicios externos, y de la persistencia, que sostiene la trazabilidad;
 permite además sustituir los algoritmos de clasificación sin modificar la capa de observación.
 
-\subsection{Capa cliente: observación sin recolección automatizada}
+\subsection{Método}
+
+\subsubsection{Capa cliente: observación sin recolección automatizada}
 
 La capa cliente se implementa como una \emph{aplicación nativa en el navegador} (una
 extensión) que se activa cuando el usuario abre una ficha de producto en una plataforma
@@ -106,7 +110,7 @@ a costa de introducir un nuevo tercero de confianza, con la política de retenci
 anonimización que ello exige. Su otra contrapartida es la fragilidad ante cambios de
 maquetación \cite{ref24}.
 
-\subsection{Conjunto de características y regla de abstención ante evidencia ausente}
+\subsubsection{Conjunto de características y regla de abstención ante evidencia ausente}
 
 El motor de riesgo trabaja sobre ocho características, resumidas en la Tabla~\ref{tab:senales}.
 Cada característica se define junto con la capa que la computa, su dominio de valores y   de
@@ -175,7 +179,7 @@ siguiente.
 
 Dos aspectos de esta regla quedan igualmente sujetos a verificación empírica. Los umbrales
 $r \geq 4$ y $r \geq 6$ se eligieron por las razones expuestas, que no acreditan que sean los
-valores adecuados: la Fase~1 de la Sección~IV, al medir qué se resuelve en fichas reales, es
+valores adecuados: la Fase~1 del protocolo de validación, al medir qué se resuelve en fichas reales, es
 la que permitirá ajustarlos. Y todas las características resueltas cuentan igual dentro de su
 dimensión, supuesto discutible cuando una señal débil basta para dar por cubierta una
 dimensión entera; ponderarlas por su confiabilidad es una alternativa que este trabajo deja
@@ -192,7 +196,7 @@ identidad del sitio, dejando al comprador sin protección frente a la suplantaci
 justificación de fondo es la asimetría de costos: presentar como seguro aquello que solo es
 desconocido traslada al comprador un riesgo que el sistema no ha evaluado.
 
-\subsection{Descomposición en servicios}
+\subsubsection{Descomposición en servicios}
 
 El motor de riesgo de la Fig.~\ref{fig:arquitectura} no es un bloque único: se despliega en
 cuatro servicios desacoplados. Un analizador de veracidad de dominio verifica la legitimidad
@@ -219,7 +223,7 @@ los resultados y almacena las consultas en la capa de persistencia.}
 \label{fig:arquitectura}
 \end{figure}
 
-\subsection{Analizador de veracidad de dominio}
+\subsubsection{Analizador de veracidad de dominio}
 
 El analizador de dominio recibe el nombre de host de la ficha y devuelve una estimación
 ordinal de veracidad. Se entiende aquí por \emph{veracidad de dominio} el grado en que el
@@ -242,13 +246,13 @@ certificado, que la literatura de seguridad en comercio electrónico caracteriza
 control fundacional y de menor costo \cite{ref30}, sino que la complementa en la dimensión
 donde aquella dejó de ser informativa.
 
-\subsection{Modelos de inferencia sobre vendedor y reseñas}
+\subsubsection{Modelos de inferencia sobre vendedor y reseñas}
 
 Dos componentes de aprendizaje automático completan el motor. El primero estima el riesgo del
 vendedor a partir del vector de características extraídas y devuelve un nivel ordinal; el
 segundo estima la proporción de reseñas presumiblemente fraudulentas en la ficha. La novedad
 de la propuesta no reside en ellos, sino en cómo se integran sus salidas con las demás
-características bajo la regla de la Sección~III-E, de modo que su configuración se documenta
+características bajo la regla de abstención ya descrita, de modo que su configuración se documenta
 solo en la medida en que hace reproducible el prototipo.
 
 Para la estimación de riesgo del vendedor se emplea un bosque aleatorio y no una arquitectura
@@ -259,7 +263,7 @@ ni codificaciones adicionales. La interpretabilidad: el modelo expone la contrib
 de cada característica. Y el costo: la inferencia sobre cien árboles es despreciable frente a
 la latencia de red de la consulta. La elección responde por tanto a requisitos técnicos, y no
 a una superioridad empírica sobre otras familias de algoritmos, extremo que los datos
-disponibles no permiten arbitrar, como muestra la Sección~IV-A.
+disponibles no permiten arbitrar, como muestra la Sección~IV.
 
 La interpretabilidad requiere una precisión, porque de ella depende la explicación que
 acompaña al veredicto. La contribución relativa de las características que el bosque aleatorio
@@ -303,7 +307,7 @@ las reseñas como característica independiente de la puntuación, si bien la fo
 deben combinarse   y en particular si la segunda debe corregir a la primera antes de la
 clasificación   constituye una decisión de diseño abierta que la validación deberá resolver.
 
-\subsection{Agregación, presentación y persistencia}
+\subsubsection{Agregación, presentación y persistencia}
 
 El agregador combina las características resueltas en un veredicto con cuatro desenlaces
 posibles: riesgo alto, moderado o bajo cuando la evidencia disponible permite decidir, y
@@ -325,5 +329,101 @@ información asociada a una consulta puede revelar hábitos de compra, el esquem
 que esas dos funciones exigen: plataforma, identificador de la publicación, nombre de host,
 valor y estado de cada característica, veredicto emitido y marca temporal. No se almacenan el
 documento de la ficha, el texto de las reseñas ni la identidad del comprador cuando este usa
-la extensión sin cuenta. La Sección~IV fija los términos de retención y disociación que rigen
+la extensión sin cuenta. El protocolo de validación fija los términos de retención y disociación que rigen
 durante la validación.
+
+Esta sección describe el protocolo con el que se someterá a prueba la arquitectura completa.
+Como meta piloto inicial se fija que la extensión resuelva al menos el 70\,\% de las
+características en fichas de plataformas grandes y al menos el 40\,\% en vendedores
+independientes. Son valores de referencia para orientar la primera medición, no umbrales de
+éxito acreditados por evidencia previa, y se revisarán con los datos que arroje la Fase~1. No
+se fijan aquí metas sobre la proporción de advertencias infundadas ni sobre el efecto en la
+decisión de compra: ambas exigen una referencia externa sobre la legitimidad de cada ficha de
+la que este protocolo todavía no dispone.
+
+\subsubsection{Validación}
+
+La validación se ejecutará en el Perú, sobre las plataformas y los hábitos descritos en la
+Sección~I. Esa elección delimita el alcance de las conclusiones empíricas, no el de la
+arquitectura: las características de la Tabla~\ref{tab:senales} se derivan de elementos
+presentes en cualquier ficha de producto y no de particularidades del mercado peruano. De ahí
+se sigue una hipótesis de transferibilidad, no una propiedad demostrada: que la propuesta
+opere en otros mercados depende de que esas características resulten observables en ellos, lo
+que exige medir su cobertura en cada caso.
+
+La validación se organiza en dos fases con objetivos separables.
+
+\emph{Fase 1: observabilidad de las características.} Antes de evaluar la utilidad del
+veredicto es necesario establecer qué fracción de las características de la
+Tabla~\ref{tab:senales} resulta efectivamente legible en fichas reales. Sobre una muestra de
+fichas de producto de las plataformas de mayor uso en el Perú se registrará, para cada
+característica, si pudo resolverse o si quedó indeterminada, distinguiendo entre plataformas
+grandes y vendedores independientes. El desenlace relevante no es un porcentaje agregado sino
+su distribución: una arquitectura que solo resolviera características en las plataformas que ya
+ofrecen garantías carecería de utilidad precisamente en el segmento donde el riesgo se
+concentra.
+
+\emph{Fase 2: comportamiento de compra con la herramienta.} Un diseño con dos grupos, con y
+sin la extensión activa, enfrentará a los participantes al mismo conjunto de fichas reales. La
+asignación al grupo será aleatoria y el orden de presentación de las fichas se
+contrabalanceará entre participantes, para que el aprendizaje sobre la tarea no se confunda
+con el efecto de la herramienta. La población objetivo son compradores digitales peruanos de
+entre 18 y 60 años. La muestra prevista de cincuenta participantes es una muestra piloto,
+dimensionada por factibilidad: permite estimar la variabilidad de las medidas y detectar
+problemas del protocolo, no alcanzar potencia estadística, que deberá calcularse a partir de
+esa variabilidad antes del estudio definitivo. Todos otorgarán su consentimiento de forma
+voluntaria antes de comenzar, y las sesiones se conducirán de manera presencial o en línea,
+según su disponibilidad. Los registros de consulta antes descritos se recogerán
+disociados del participante que los originó, se conservarán únicamente durante el periodo de
+análisis y se eliminarán al cierre del estudio; ningún dato que permita reconstruir el
+historial de compra de una persona identificada forma parte de lo que el protocolo almacena.
+
+Las medidas de esta fase se eligieron bajo una restricción que conviene declarar: el diseño no
+dispone de una verdad de referencia sobre cada ficha. Establecer si un vendedor es fraudulento
+exige evidencia sobre operaciones consumadas denuncias verificadas, retiros de la plataforma
+que la ficha no contiene y que este protocolo no produce. Por eso no se miden aquí la tasa de
+identificación correcta ni la tasa de falsos positivos sobre comercios legítimos: ambas
+presuponen esa referencia, y construirla es un requisito previo del estudio de eficacia, no un
+subproducto de este.
+
+Se medirá, en cambio, lo que el diseño sí puede observar. Del comportamiento: la decisión de
+compra sobre cada ficha en uno y otro grupo, la proporción de decisiones que el participante
+revierte tras leer el veredicto y el tiempo hasta decidir. Del sistema: la cobertura de
+características alcanzada en cada ficha y la proporción de fichas en que la regla se abstiene,
+magnitud que gobierna la utilidad del instrumento, pues una herramienta que se abstiene casi
+siempre no llega a informar decisión alguna. La percepción del participante se recoge mediante
+un cuestionario estructurado de quince ítems con respuesta en escala de Likert de cinco
+puntos, organizado en las cinco dimensiones de la Tabla~\ref{tab:instrumento}. Solo el bloque
+de usabilidad emplea un instrumento validado, la Escala de Usabilidad del Sistema
+\cite{ref23}; las cuatro dimensiones restantes constituyen un instrumento propio, sujeto a
+validación en el propio estudio piloto, del que se reportará la consistencia interna antes de
+interpretar sus resultados. La dimensión de influencia en la decisión es autorreportada y no
+se emplea como indicador de eficacia: que una advertencia influya no implica que la decisión
+resultante sea mejor, y establecerlo exige la referencia externa que esta fase no tiene.
+
+\begin{table}[t]
+\caption{Dimensiones del instrumento de validación con usuarios}
+\label{tab:instrumento}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}p{2.35cm}p{5.3cm}@{}}
+\toprule
+\textbf{Dimensión} & \textbf{Qué establece} \\
+\midrule
+Usabilidad & Si el veredicto y su explicación se interpretan sin instrucción previa (bloque SUS) \\
+Confianza percibida & Si el participante considera fundada la advertencia que recibe \\
+Riesgo percibido & Si su estimación del riesgo de la ficha varía al disponer de la herramienta \\
+Intención de uso y recomendación & Si declararía seguir usándola fuera del entorno de prueba \\
+Influencia en la decisión & Si la advertencia modificó lo que habría hecho sin ella \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La asimetría de costos que motiva la regla de abstención se mantiene como
+principio de diseño y no como resultado medible en esta fase. Un instrumento que advierte con
+excesiva frecuencia pierde credibilidad y su costo recae sobre comercios honestos; cuantificar
+ese costo exige la verdad de referencia que el estudio de eficacia deberá construir. Por eso
+el veredicto de riesgo y el de evidencia insuficiente se mantienen separados: son resultados
+distintos y su evaluación no puede confundirse.

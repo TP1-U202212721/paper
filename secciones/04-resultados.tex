@@ -1,0 +1,79 @@
+%% Citas verificadas contra el PDF. Sin marcadores [VERIFY] pendientes.
+
+\section{RESULTADOS Y DISCUSIÓN}
+
+\subsection{Verificación preliminar del vector de características}
+
+Para verificar que el vector de ocho características de la Tabla~\ref{tab:senales} contiene
+información discriminante, se construyó un conjunto sintético de 10\,000 registros con tres
+clases equilibradas. El conjunto se construyó ante la ausencia de un conjunto etiquetado
+público de fichas de vendedores peruanos: sus variables y rangos se derivaron de los factores
+de riesgo identificados en la Sección~II, y las etiquetas se asignaron mediante reglas
+deterministas sobre esas mismas variables. Declarar esta procedencia es indispensable para
+interpretar lo que sigue. Sus siete entradas corresponden a siete de las ocho de la
+Tabla~\ref{tab:senales}. La veracidad de dominio, que este trabajo introduce, es la única que
+no forma parte de ese vector. Se entrenaron cinco algoritmos de familias distintas sobre la
+misma partición 80/20 con semilla fija, y se validaron además mediante validación cruzada
+estratificada de cinco pliegues sobre el conjunto completo. Los resultados muestran que los
+cinco algoritmos clasifican correctamente los 2\,000 registros de prueba, sin desviación
+entre pliegues.
+
+Los experimentos se ejecutaron sobre Ubuntu 24.04.3 LTS con Python 3.11 y scikit-learn, en un
+procesador Intel Xeon E3-1240 v5 y sin aceleración gráfica. Las máquinas de soporte vectorial y
+el clasificador de vecinos más cercanos se encadenaron a un normalizador de media cero y
+varianza unitaria; los demás hiperparámetros se mantuvieron por defecto, con semilla fija,
+porque el objetivo no era optimizar el desempeño sino comprobar si existía diferencia alguna
+entre familias de algoritmos.
+
+Los cinco algoritmos recuperan la regla generadora: que un clasificador de vecinos más
+cercanos iguale a un ensamble de gradiente potenciado, y que ambos igualen a un árbol
+individual, indica que la frontera de decisión es recuperable por cualquier método, de modo
+que el problema es separable por construcción. Un árbol de decisión de profundidad cinco
+reproduce la regla de etiquetado en su totalidad, y la importancia de las características se
+concentra en dos: la puntuación del producto, con 0.51, y el volumen de ventas, con 0.46,
+mientras que tres de las siete no contribuyen en absoluto.
+
+El ejercicio vale como \textbf{verificación del canal de procesamiento y diagnóstico del
+conjunto}, no como medida de eficacia. De ello se siguen dos consecuencias. La primera es que
+estos datos \textbf{no permiten discriminar entre algoritmos}: la elección del bosque
+aleatorio descrita en la Sección~III-B responde a requisitos de interpretabilidad y costo, no a
+una comparación empírica que este conjunto no puede arbitrar. La segunda, más relevante, es
+que las métricas obtenidas sobre él no estiman la calidad del nivel estimado de riesgo, sino
+la fidelidad con que un modelo recupera la regla que generó sus propias etiquetas. La validez
+del enfoque depende de que las características sean legibles en fichas reales y de que las
+etiquetas provengan de una fuente independiente del vector de entrada, según establece el
+protocolo de validación de la Sección~III-B.
+
+\subsection{Amenazas a la validez}
+
+Cuatro limitaciones condicionan lo que este diseño podrá concluir, y conviene explicitarlas
+antes de su ejecución.
+
+La primera afecta a la capa cliente. La extracción depende de selectores sobre el DOM, y se
+ha advertido que las técnicas apoyadas en selectores predefinidos son sensibles a cambios de
+maquetación \cite{ref24}. Una plataforma que rediseñe su ficha reducirá la cobertura de
+características sin previo aviso, por lo que la Fase~1 debe repetirse periódicamente y no
+tratarse como una medición única.
+
+La segunda afecta al clasificador de riesgo. Sus etiquetas de entrenamiento se derivan
+mediante reglas deterministas aplicadas a las mismas características que el modelo recibe como
+entrada, de modo que el desempeño medido sobre ese conjunto refleja la recuperación de esa
+regla y no el comportamiento frente a vendedores fraudulentos reales. La mitigación es previa
+a cualquier medición de eficacia y condiciona el orden del trabajo futuro: construir un
+conjunto cuyas etiquetas provengan de una fuente independiente del vector de características,
+y hasta entonces no reportar métricas de desempeño del clasificador.
+
+La tercera es de validez ecológica. Un experimento en sesión mide la capacidad de decisión en
+condiciones de atención deliberada, mientras que la evidencia disponible sugiere que la
+victimización ocurre justamente cuando esa atención falla \cite{ref27}. El diseño puede
+establecer si la herramienta ayuda a quien la mira, no si protege a quien compra distraído.
+Mitigarlo exige una segunda medición en uso real, con la extensión instalada durante semanas y
+sobre las compras que el participante hubiera hecho de todos modos, que este protocolo no
+cubre.
+
+La cuarta es la más general: la arquitectura supone que el atacante no adapta su
+comportamiento a las características observadas, suposición insostenible a mediano plazo
+porque los defraudadores ajustan sus estrategias frente a los mecanismos de detección
+\cite{ref28}. Como mitigación parcial, el registro de consultas descrito en la Sección~III-B
+hace observable esa deriva y permite reentrenar cuando la distribución de las características
+cambie; ninguna medición puntual, en cambio, conserva su validez indefinidamente.
