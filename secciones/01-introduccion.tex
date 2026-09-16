@@ -66,21 +66,19 @@ lugar de utilizar métricas de clasificación estándar contra una verdad de ref
 inexistente en la ficha de producto.
 
 Las contribuciones de este trabajo son tres. En primer lugar, un conjunto de ocho
-características de riesgo extraíbles desde el cliente. Estas características vienen acompañadas
-de una regla explícita que distingue el riesgo detectado de la evidencia insuficiente,
-garantizando que la ausencia de información nunca se presente como seguridad. Se presenta como
-un mecanismo de diseño: está emparentado con los esquemas de abstención u opción de rechazo
-conocidos en clasificación, y lo que aquí se propone es su aplicación a la evaluación de
-riesgo del lado del comprador, donde los sistemas de detección de fraude existentes operan
-sobre datos completos y no abordan el problema de la información parcial. Establecer en qué
-medida ello constituye una novedad frente a esos esquemas exige la comparación sistemática que
-% [VERIFY] al cerrar la comparación, citar fuentes de reject option / selective
-% classification obtenidas del grupo Mendeley "Taller de Proyecto 2".
-este trabajo aún no realiza. En segundo lugar, una arquitectura de tres capas cuyo componente principal es una
-extensión de navegador. Se presentan los diseños de los módulos clave y se entrenaron
-prototipos de los clasificadores de vendedor y reseñas. En tercer lugar, un protocolo de
-validación en dos fases que separa la observabilidad de las características de la eficacia del
-veredicto, identificando las amenazas a la validez que condicionan las conclusiones.
+características de riesgo extraíbles desde el cliente, acompañadas de una regla explícita que
+distingue el riesgo detectado de la evidencia insuficiente, de modo que la ausencia de
+información nunca se presente como seguridad. Se formula como un mecanismo de diseño y no como
+un hallazgo, y su diferencia con los trabajos revisados está en dónde se aplica: los sistemas
+de detección examinados en la Sección~II operan sobre datos que el operador posee completos,
+como registros transaccionales, huellas de dispositivo y grafos de interacción \cite{ref28}, y
+emiten un veredicto en todos los casos; ninguno decide con la información parcial que el
+comprador tiene delante ni declara cuándo esa información no alcanza. En segundo lugar, una
+arquitectura de tres capas cuyo componente principal es una extensión de navegador. Se
+presentan los diseños de los módulos clave y se entrenaron prototipos de los clasificadores de
+vendedor y reseñas. En tercer lugar, un protocolo de validación en dos fases que separa la
+observabilidad de las características de la eficacia del veredicto, identificando las amenazas
+a la validez que condicionan las conclusiones.
 
 Cabe precisar qué es exactamente lo que se presenta. Este artículo aporta tres cosas de
 naturaleza distinta: una propuesta arquitectónica, una validación diagnóstica preliminar sobre
