@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1789330172.86385 "/Users/lordmathi2741/Downloads/short-paper-es/main.tex" "main.pdf" "main" 1789330173.16598 0
+["pdflatex"] 1789356625.7813 "/Users/lordmathi2741/Downloads/short-paper-es/main.tex" "main.pdf" "main" 1789356626.07407 0
   "/Users/lordmathi2741/Downloads/short-paper-es/main.tex" 1789324991.62381 1987 ef00baecef3a4bd0d523251ec76c6988 ""
   "/usr/local/texlive/2026basic/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2026basic/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1136768653 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -166,15 +166,15 @@
   "/usr/local/texlive/2026basic/texmf.cnf" 1772405582 628 bbc09d6d38872d53c11bb48dc9b14e88 ""
   "bibliografia.tex" 1788815100 6172 15833c9a171eb68f9748a393f234911f ""
   "figuras/arquitectura-logica.jpeg" 1789328865.55223 168375 dd8714565edf88df7172cd674f6b23ad ""
-  "main.aux" 1789330173.12856 6102 dd66028c7b2c113ea40bcec0ede9b539 "pdflatex"
+  "main.aux" 1789356626.03843 6084 6fff092e40ce1364c2e4375022836d9e "pdflatex"
   "main.tex" 1789324991.62381 1987 ef00baecef3a4bd0d523251ec76c6988 ""
   "metadatos.tex" 1789320383.16189 3237 b0636f6cf7385d623273a5b54c156e27 ""
   "preambulo.tex" 1788815100 1808 fe73030c2f18679fe6e361ca4ac935d4 ""
-  "secciones/01-introduccion.tex" 1789329896.96619 5996 05f1db13b42621e4e94f000210b2122d ""
-  "secciones/02-trabajo-relacionado.tex" 1789329876.22323 7205 8db51a61d8b6383b415cd21a1fa29038 ""
-  "secciones/03-metodo.tex" 1789330061.99831 24869 3c6c1a4e526902a52d722a52562dc1b9 ""
-  "secciones/04-validacion.tex" 1789329681.83804 10291 c309fc467157d3fe81c6528029352af8 ""
-  "secciones/05-conclusiones.tex" 1789329708.59525 2693 e7e34aec905e7152de00ca1b08fd81b0 ""
+  "secciones/01-introduccion.tex" 1789331429.89808 6289 51a0e17c2d76d70883512ddcb48a76a2 ""
+  "secciones/02-trabajo-relacionado.tex" 1789330641.05166 7414 b254f931005ed2cc6b2f39c49caa833d ""
+  "secciones/03-metodo.tex" 1789356625.33724 24047 959aa930f705bd7c18997f384c133d4d ""
+  "secciones/04-validacion.tex" 1789331575.84313 10157 2c7a7ba404e57ddfaf57ae7397f1e8df ""
+  "secciones/05-conclusiones.tex" 1789331100.0553 2933 827347565067c6277566ce13d92cc598 ""
   (generated)
   "main.aux"
   "main.log"

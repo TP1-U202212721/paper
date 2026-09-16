@@ -257,7 +257,26 @@ la emisión del veredicto principal.
 
 \subsection{Modelos de inferencia sobre vendedor y reseñas}
 
-\begin{table}[t]
+Dos componentes de aprendizaje automático completan el motor. El primero estima el riesgo del
+vendedor a partir del vector de características extraídas y devuelve un nivel ordinal; el
+segundo estima la proporción de reseñas presumiblemente fraudulentas en la ficha. Sus
+configuraciones se resumen en las Tablas~\ref{tab:rf} y~\ref{tab:modelo}.
+
+Para la estimación de riesgo del vendedor se emplea un bosque aleatorio y no una arquitectura
+de mayor capacidad, por tres propiedades que el problema exige. La dimensionalidad: el vector
+de entrada contiene ocho características heterogéneas   binarias, categóricas, discretas y
+continuas   , un régimen en el que los métodos de ensamble por árboles operan sin normalización
+ni codificaciones adicionales. La interpretabilidad: el modelo expone la contribución relativa
+de cada característica, con la que se construye la explicación que acompaña al veredicto. Y el
+costo: la inferencia sobre cien árboles es despreciable frente a la latencia de red de la
+consulta.
+
+El clasificador del que se dispone actualmente difiere de esta especificación: fue entrenado
+sobre siete entradas, sin la veracidad de dominio que este trabajo incorpora. Añadirla exige
+reentrenar el modelo sobre un conjunto que la contenga, y su ausencia es consecuencia de que
+este trabajo describe la arquitectura propuesta y no una implementación ya construida.
+
+\begin{table}[!ht]
 \caption{Configuración del clasificador de riesgo del vendedor}
 \label{tab:rf}
 \centering
@@ -279,7 +298,28 @@ Semilla                       & 42 \\
 \end{tabular}
 \end{table}
 
-\begin{table*}[t]
+El segundo componente estima la autenticidad de las reseñas con DistilBERT, un codificador
+transformador destilado cuya configuración de ajuste recoge la tabla de configuración. La
+elección de una variante destilada responde a una restricción operativa: la inferencia ocurre
+entre la consulta de la extensión y la emisión del veredicto, de modo que su costo incide
+sobre el tiempo que el comprador espera. Seis capas y 66.96 millones de parámetros reducen
+ese costo frente a un codificador completo; la ejecución en precisión de 32 bits sobre unidad
+central de proceso evita exigir aceleración por hardware. La contrapartida es una capacidad de
+representación menor, cuya repercusión sobre la exactitud debe cuantificarse en la validación.
+
+El ajuste fino se realizó durante una época con tasa de aprendizaje de $2\times10^{-5}$ y
+planificador lineal, valores habituales para adaptar un codificador preentrenado sin alterar
+las representaciones aprendidas. La entrada del clasificador no es únicamente el texto de la
+reseña: se serializan conjuntamente la categoría del producto, la calificación asignada y el
+texto, de modo que el modelo dispone del contexto en el que la reseña fue emitida. Esta
+decisión responde a que una misma formulación puede resultar verosímil o anómala según la
+calificación que la acompaña. La brevedad del ajuste   una sola época   constituye una
+limitación que la Sección~IV recoge. Este trabajo no evalúa el
+clasificador de reseñas: la tabla de configuración documenta su configuración para hacer
+reproducible el componente. Ni el corpus de ajuste ni sus métricas de prueba forman parte de
+lo reportado aquí, y su evaluación queda comprendida en el trabajo futuro de la Sección~V.
+
+\begin{table*}[!ht]
 \caption{Configuración del clasificador de reseñas fraudulentas}
 \label{tab:modelo}
 \centering
@@ -304,46 +344,6 @@ Clases                       & \textsc{real}, \textsc{fake} & Semilla           
 \bottomrule
 \end{tabular}
 \end{table*}
-
-Dos componentes de aprendizaje automático completan el motor. El primero estima el riesgo del
-vendedor a partir del vector de características extraídas y devuelve un nivel ordinal; el
-segundo estima la proporción de reseñas presumiblemente fraudulentas en la ficha. Sus
-configuraciones se resumen en las Tablas~\ref{tab:rf} y~\ref{tab:modelo}.
-
-Para la estimación de riesgo del vendedor se emplea un bosque aleatorio y no una arquitectura
-de mayor capacidad, por tres propiedades que el problema exige. La dimensionalidad: el vector
-de entrada contiene ocho características heterogéneas   binarias, categóricas, discretas y
-continuas   , un régimen en el que los métodos de ensamble por árboles operan sin normalización
-ni codificaciones adicionales. La interpretabilidad: el modelo expone la contribución relativa
-de cada característica, con la que se construye la explicación que acompaña al veredicto. Y el
-costo: la inferencia sobre cien árboles es despreciable frente a la latencia de red de la
-consulta.
-
-El clasificador del que se dispone actualmente difiere de esta especificación: fue entrenado
-sobre siete entradas, sin la veracidad de dominio que este trabajo incorpora. Añadirla exige
-reentrenar el modelo sobre un conjunto que la contenga, y su ausencia es consecuencia de que
-este trabajo describe la arquitectura propuesta y no una implementación ya construida.
-
-El segundo componente estima la autenticidad de las reseñas con DistilBERT, un codificador
-transformador destilado cuya configuración de ajuste recoge la tabla de configuración. La
-elección de una variante destilada responde a una restricción operativa: la inferencia ocurre
-entre la consulta de la extensión y la emisión del veredicto, de modo que su costo incide
-sobre el tiempo que el comprador espera. Seis capas y 66.96 millones de parámetros reducen
-ese costo frente a un codificador completo; la ejecución en precisión de 32 bits sobre unidad
-central de proceso evita exigir aceleración por hardware. La contrapartida es una capacidad de
-representación menor, cuya repercusión sobre la exactitud debe cuantificarse en la validación.
-
-El ajuste fino se realizó durante una época con tasa de aprendizaje de $2\times10^{-5}$ y
-planificador lineal, valores habituales para adaptar un codificador preentrenado sin alterar
-las representaciones aprendidas. La entrada del clasificador no es únicamente el texto de la
-reseña: se serializan conjuntamente la categoría del producto, la calificación asignada y el
-texto, de modo que el modelo dispone del contexto en el que la reseña fue emitida. Esta
-decisión responde a que una misma formulación puede resultar verosímil o anómala según la
-calificación que la acompaña. La brevedad del ajuste   una sola época   constituye una
-limitación que la Sección~IV recoge. Este trabajo no evalúa el
-clasificador de reseñas: la tabla de configuración documenta su configuración para hacer
-reproducible el componente. Ni el corpus de ajuste ni sus métricas de prueba forman parte de
-lo reportado aquí, y su evaluación queda comprendida en el trabajo futuro de la Sección~V.
 
 La inferencia sobre reseñas es necesaria porque, según el resultado de equilibrio citado en
 la Sección~II, la reputación visible es manipulable por construcción \cite{ref29}: tomar la
